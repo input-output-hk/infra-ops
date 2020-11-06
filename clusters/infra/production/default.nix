@@ -4,13 +4,11 @@ let
   inherit (builtins) readFile replaceStrings;
   inherit (lib) mapAttrs' nameValuePair flip attrValues listToAttrs forEach;
   inherit (config) cluster;
-  inherit (cluster.vpc) subnets;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 
   bitte = self.inputs.bitte;
 
-  # Only used by auto-scaling instances
   amis = {
     eu-central-1 = "ami-0839f2c610f876d2d";
     us-east-2 = "ami-0492aa69cf46f79c3";
@@ -20,18 +18,35 @@ let
 in {
   imports = [ ./iam.nix ];
 
+  services.consul.policies.developer.servicePrefix."catalyst-" = {
+    policy = "write";
+    intentions = "write";
+  };
+
+  services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
+  services.nomad.policies.developer.namespace."catalyst-*".policy = "write";
+
+  services.nomad.namespaces = {
+    catalyst-ceph = { description = "Catalyst (ceph)"; };
+  };
+
   cluster = {
     name = "infra-production";
-    kms = "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966";
+    developerGithubNames = [ ];
+    developerGithubTeamNames = [ "devops" ];
     domain = "infra.aws.iohkdev.io";
+    kms =
+      "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966";
     s3Bucket = "iohk-infra";
+    terraformOrganization = "iohk-infra";
+
     s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
     adminNames = [
+      "craige.mcwhirter"
       "john.lotoski"
       "michael.fellinger"
     ];
 
-    terraformOrganization = "iohk-infra";
 
     flakePath = ../../..;
 
@@ -78,6 +93,9 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             "${extraConfig}"
+            ./secrets.nix
+            ./host_volumes.nix
+            ./seaweedfs.nix
           ];
 
           securityGroupRules = {
@@ -110,8 +128,7 @@ in {
       core-1 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.0.10";
-        subnet = subnets.core-1;
-        route53.domains = [ "consul" "vault" "nomad" ];
+        subnet = cluster.vpc.subnets.core-1;
 
         modules = [
           (bitte + /profiles/core.nix)
@@ -120,8 +137,7 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules)
-            internet internal ssh http https haproxyStats vault-http grpc;
+          inherit (securityGroupRules) internet internal ssh;
         };
 
         initialVaultSecrets = {
@@ -139,13 +155,12 @@ in {
             | vault kv put kv/bootstrap/clients/nomad encrypt=-
           '';
         };
-
       };
 
       core-2 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.1.10";
-        subnet = subnets.core-2;
+        subnet = cluster.vpc.subnets.core-2;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 
@@ -157,7 +172,7 @@ in {
       core-3 = {
         instanceType = "t3a.medium";
         privateIP = "172.16.2.10";
-        subnet = subnets.core-3;
+        subnet = cluster.vpc.subnets.core-3;
 
         modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
 
@@ -169,13 +184,29 @@ in {
       monitoring = {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
-        subnet = subnets.core-1;
-        route53.domains = [ "monitoring" ];
+        subnet = cluster.vpc.subnets.core-1;
+        volumeSize = 40;
+        route53.domains = [ "*.${cluster.domain}" ];
 
-        modules = [ (bitte + /profiles/monitoring.nix) ./secrets.nix ];
+        modules = let
+          extraConfig = pkgs.writeText "extra-config.nix" ''
+            { ... }: {
+              services.vault-agent-core.vaultAddress =
+                "https://${cluster.instances.core-1.privateIP}:8200";
+              services.ingress.enable = true;
+              services.ingress-config.enable = true;
+            }
+          '';
+        in [
+          (bitte + /profiles/monitoring.nix)
+          ./secrets.nix
+          "${extraConfig}"
+          ./ingress.nix
+        ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http;
+          inherit (securityGroupRules)
+            internet internal ssh http https;
         };
       };
     };

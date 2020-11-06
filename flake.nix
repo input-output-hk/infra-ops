@@ -1,33 +1,40 @@
 {
-  description = "Bitte for IOHK Infra";
+  description = "Bitte for infra-ops";
 
   inputs = {
     bitte-cli.follows = "bitte/bitte-cli";
-    bitte.url = "github:input-output-hk/bitte";
-    #bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
+    # bitte.url = "github:input-output-hk/bitte/dockerRegistry";
+    bitte.url = "path:/home/craige/source/IOHK/bitte";
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";
     utils.url = "github:numtide/flake-utils";
+    rust-libs.url =
+      "github:input-output-hk/rust-libs.nix/vit-servicing-station";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
+    jormungandr-nix = {
+      url = "github:input-output-hk/jormungandr-nix";
+      flake = false;
+    };
+    vit-servicing-station = {
+      url = "github:input-output-hk/vit-servicing-station";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, utils, ops-lib, bitte, ... }:
+  outputs = { self, nixpkgs, utils, rust-libs, ops-lib, bitte, ... }:
     (utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {
       overlay = import ./overlay.nix { inherit system self; };
 
       legacyPackages = import nixpkgs {
         inherit system;
-        config.allowUnfreePredicate = pkg:
-          let name = nixpkgs.lib.getName pkg;
-          in (builtins.elem name [ "ssm-session-manager-plugin" ])
-          || throw "unfree not allowed: ${name}";
+        config.allowUnfree = true; # for ssm-session-manager-plugin
         overlays = [ overlay ];
       };
 
       inherit (legacyPackages) devShell;
 
       packages = {
-        inherit (legacyPackages) bitte nixFlakes sops;
+        inherit (legacyPackages) bitte nixFlakes sops vit-servicing-station;
         inherit (self.inputs.bitte.packages.${system})
           terraform-with-plugins cfssl consul;
       };
@@ -39,7 +46,7 @@
         system = "x86_64-linux";
       };
     in {
-      inherit (pkgs) clusters nomadJobs;
+      inherit (pkgs) clusters nomadJobs dockerImages;
       nixosConfigurations = pkgs.nixosConfigurations // {
         # attrs of interest:
         # * config.system.build.zfsImage
@@ -65,7 +72,6 @@
               "ap-northeast-2"
               "eu-central-1"
               "us-east-2"
-              "us-west-1"
             ];
           };
           system = "x86_64-linux";
