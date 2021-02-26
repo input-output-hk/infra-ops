@@ -1,4 +1,4 @@
-{ config, ... }:
+{ lib, config, pkgs, ... }:
 let cfg = config.services.vault-backend;
 in {
   options = {
@@ -7,7 +7,7 @@ in {
     };
   };
 
-  config = mkIf cfg.enabled {
+  config = {
     systemd.services.vault-backend = {
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];

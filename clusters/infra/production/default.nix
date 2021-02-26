@@ -14,9 +14,7 @@ in {
   services.nomad.policies.admin.namespace."infra-*".policy = "write";
   services.nomad.policies.developer.namespace."infra-*".policy = "write";
 
-  services.nomad.namespaces = {
-    infra-default.description = "Infra Default";
-  };
+  services.nomad.namespaces = { infra-default.description = "Infra Default"; };
 
   nix.binaryCaches = [
     "https://hydra.iohk.io"
@@ -144,7 +142,11 @@ in {
         volumeSize = 40;
         route53.domains = [ "*.${cluster.domain}" ];
 
-        modules = [ (bitte + /profiles/monitoring.nix) ./secrets.nix ];
+        modules = [
+          (bitte + /profiles/monitoring.nix)
+          ./secrets.nix
+          ./vault-backend.nix
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh http https;

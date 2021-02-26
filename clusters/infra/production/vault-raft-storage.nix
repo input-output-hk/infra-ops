@@ -9,6 +9,6 @@
       leaderCaCertFile = vcfg.tlsCertFile;
       leaderClientCertFile = vcfg.tlsCertFile;
       leaderClientKeyFile = vcfg.tlsKeyFile;
-    }) config.cluster.instances;
+    }) instances;
   };
 }
