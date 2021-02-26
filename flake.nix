@@ -30,7 +30,7 @@
 
       nixosConfigurations = hashiStack.nixosConfigurations;
     in {
-      inherit (hashiStack) clusters;
+      clusters.x86_64-linux = hashiStack.clusters;
       inherit nixosConfigurations;
       legacyPackages.x86_64-linux = pkgs;
       devShell.x86_64-linux = pkgs.devShell;

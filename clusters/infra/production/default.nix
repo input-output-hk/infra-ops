@@ -6,17 +6,29 @@ let
 
   bitte = self.inputs.bitte;
 in {
-  services.consul.policies.developer.servicePrefix."catalyst-" = {
+  services.consul.policies.developer.servicePrefix."infra-" = {
     policy = "write";
     intentions = "write";
   };
 
-  services.nomad.policies.admin.namespace."catalyst-*".policy = "write";
-  services.nomad.policies.developer.namespace."catalyst-*".policy = "write";
+  services.nomad.policies.admin.namespace."infra-*".policy = "write";
+  services.nomad.policies.developer.namespace."infra-*".policy = "write";
 
   services.nomad.namespaces = {
-    catalyst-ceph = { description = "Catalyst (ceph)"; };
+    infra-default.description = "Infra Default";
   };
+
+  nix.binaryCaches = [
+    "https://hydra.iohk.io"
+    "https://cache.nixos.org"
+    "https://hydra.mantis.ist"
+  ];
+
+  nix.binaryCachePublicKeys = [
+    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    "hydra.mantis.ist-1:4LTe7Q+5pm8+HawKxvmn2Hx0E3NbkYjtf1oWv+eAmTo="
+  ];
 
   cluster = {
     name = "infra-production";
@@ -85,6 +97,7 @@ in {
           (bitte + /profiles/core.nix)
           (bitte + /profiles/bootstrapper.nix)
           ./secrets.nix
+          ./vault-raft-storage.nix
         ];
 
         securityGroupRules = {
@@ -97,7 +110,11 @@ in {
         privateIP = "172.16.1.10";
         subnet = cluster.vpc.subnets.core-2;
 
-        modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
+        modules = [
+          (bitte + /profiles/core.nix)
+          ./secrets.nix
+          ./vault-raft-storage.nix
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -109,7 +126,11 @@ in {
         privateIP = "172.16.2.10";
         subnet = cluster.vpc.subnets.core-3;
 
-        modules = [ (bitte + /profiles/core.nix) ./secrets.nix ];
+        modules = [
+          (bitte + /profiles/core.nix)
+          ./secrets.nix
+          ./vault-raft-storage.nix
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;

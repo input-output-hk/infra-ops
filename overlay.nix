@@ -1,14 +1,16 @@
 inputs: final: prev: {
   devShell = let
-    cluster = "infra-production";
-    domain = final.clusters.${cluster}.proto.config.cluster.domain;
+    cluster = final.clusters.infra-production.proto.config.cluster;
+    inherit (cluster) domain;
   in prev.mkShell {
     # for bitte-cli
     LOG_LEVEL = "debug";
 
-    BITTE_CLUSTER = cluster;
+    BITTE_CLUSTER = cluster.name;
     AWS_PROFILE = "infra-ops";
-    AWS_DEFAULT_REGION = final.clusters.${cluster}.proto.config.cluster.region;
+    AWS_DEFAULT_REGION = cluster.region;
+    TERRAFORM_ORGANIZATION = cluster.terraformOrganization;
+    NOMAD_NAMESPACE = "infra-default";
 
     VAULT_ADDR = "https://vault.${domain}";
     NOMAD_ADDR = "https://nomad.${domain}";
