@@ -87,12 +87,14 @@ nix run .#clusters.infra-production.tf.network.config
 
 * Deploy the terraform network with:
 ```
-bitte terraform network
+bitte terraform network plan
+bitte terraform network apply
 ```
 
 * Deploy the terraform core nodes with:
 ```
-bitte terraform core
+bitte terraform core plan
+bitte terraform core apply
 ```
 
 * Generate the certs for the new cluster with:
@@ -102,7 +104,8 @@ bitte certs --domain $DOMAIN
 
 * Deploy the terraform clients with:
 ```
-bitte terraform clients
+bitte terraform clients plan
+bitte terraform clients apply
 ```
 
 * Troubleshooting:
