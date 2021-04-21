@@ -1,6 +1,7 @@
 { self, lib, pkgs, config, ... }:
 let
   inherit (config) cluster;
+  inherit (pkgs.terralib) var regions awsProviderNameFor;
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 
@@ -13,6 +14,46 @@ in {
 
   services.nomad.policies.admin.namespace."infra-*".policy = "write";
   services.nomad.policies.developer.namespace."infra-*".policy = "write";
+
+  services.vault.policies = {
+    admin.path."secret/*".capabilities =
+      [ "create" "read" "update" "delete" "list" ];
+    terraform.path."secret/vbk/*".capabilities =
+      [ "create" "read" "update" "delete" "list" ];
+  };
+
+  tf.infra.configuration = {
+    terraform.backend.http =
+      let vbk = "https://vbk.infra.aws.iohkdev.io/state/${cluster.name}/infra";
+      in {
+        address = vbk;
+        lock_address = vbk;
+        unlock_address = vbk;
+      };
+
+    terraform.required_providers = pkgs.terraform-provider-versions;
+
+    provider = {
+      aws = [{ region = config.cluster.region; }] ++ (lib.forEach regions
+        (region: {
+          inherit region;
+          alias = awsProviderNameFor region;
+        }));
+
+      vault = { };
+    };
+
+    resource.vault_github_auth_backend.terraform = {
+      organization = "input-output-hk";
+      path = "github-terraform";
+    };
+
+    resource.vault_github_team.devops = {
+      backend = var "vault_github_auth_backend.terraform.path";
+      team = "devops";
+      policies = [ "terraform" ];
+    };
+  };
 
   services.nomad.namespaces = { infra-default.description = "Infra Default"; };
 
@@ -31,7 +72,7 @@ in {
   cluster = {
     name = "infra-production";
     developerGithubNames = [ ];
-    developerGithubTeamNames = [ "devops" ];
+    developerGithubTeamNames = [ ];
     domain = "infra.aws.iohkdev.io";
     kms =
       "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966";

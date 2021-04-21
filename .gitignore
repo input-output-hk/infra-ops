@@ -5,3 +5,4 @@ secrets/
 cert.config
 config.tf.json
 result/
+/.terraform.lock.hcl

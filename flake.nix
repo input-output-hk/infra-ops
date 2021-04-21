@@ -2,7 +2,8 @@
   description = "Bitte for infra-ops";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte";
+    # bitte.url = "github:input-output-hk/bitte";
+    bitte.url = "path:/home/manveru/github/input-output-hk/bitte";
     bitte-cli.follows = "bitte/bitte-cli";
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";

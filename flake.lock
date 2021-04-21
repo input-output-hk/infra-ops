@@ -19,17 +19,13 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1614346083,
-        "narHash": "sha256-6kzJ9qo22UtmHjqiGYpbphJWiFiftlF2Z18IX/OHiJs=",
-        "owner": "input-output-hk",
-        "repo": "bitte",
-        "rev": "1c5481609ea918ca46339fcfc2104c435a859a89",
-        "type": "github"
+        "narHash": "sha256-I+/KHq4bADFbMHJgp3eYujon5FKC6UXSPtTMUhHOIhU=",
+        "path": "/home/manveru/github/input-output-hk/bitte",
+        "type": "path"
       },
       "original": {
-        "owner": "input-output-hk",
-        "repo": "bitte",
-        "type": "github"
+        "path": "/home/manveru/github/input-output-hk/bitte",
+        "type": "path"
       }
     },
     "bitte-cli": {
@@ -141,18 +137,13 @@
     },
     "nixpkgs-terraform": {
       "locked": {
-        "lastModified": 1601377216,
-        "narHash": "sha256-tYwmPuCgibq72ReYrSTXND4RlZllsP9sVrpncggnBz0=",
-        "owner": "manveru",
-        "repo": "nixpkgs",
-        "rev": "e23f63315b452837bfd49b7f17a4fe9cba6e9094",
-        "type": "github"
+        "narHash": "sha256-j8InLwtqcFPp8CU4ch4jXXr2JkUsy7LXRTx+E6PAqsM=",
+        "path": "/home/manveru/github/nixos/nixpkgs",
+        "type": "path"
       },
       "original": {
-        "owner": "manveru",
-        "ref": "terraform-providers",
-        "repo": "nixpkgs",
-        "type": "github"
+        "path": "/home/manveru/github/nixos/nixpkgs",
+        "type": "path"
       }
     },
     "nixpkgs_2": {

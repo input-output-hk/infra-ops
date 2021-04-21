@@ -113,3 +113,35 @@ bitte terraform clients
 
 * Nomad job definitions exist in the `jobs/` folder
 * Other Bitte cluster repos and their job definitions can be used as templates for new jobs
+
+
+# Terraform State
+
+## Authenticate with the infra-ops Vault:
+
+    export TF_HTTP_USERNAME=TOKEN
+    export TF_HTTP_PASSWORD="$(
+      awk '/github.com/ {print $6; exit}' ~/.netrc \
+      | vault login \
+        -token-only \
+        -address https://vault.infra.aws.iohkdev.io \
+        -method github \
+        -path github-terraform \
+        token=-
+    )"
+
+Existing state in Terraform Cloud needs migration:
+
+    bitte tf <workspace> init
+
+Use the needed replacements to migrate to the new provider conventions:
+
+    terraform state replace-provider registry.terraform.io/-/aws registry.terraform.io/hashicorp/aws
+    terraform state replace-provider registry.terraform.io/-/null registry.terraform.io/hashicorp/null
+    terraform state replace-provider registry.terraform.io/-/tls registry.terraform.io/hashicorp/tls
+    terraform state replace-provider registry.terraform.io/-/local registry.terraform.io/hashicorp/local
+    terraform state replace-provider registry.terraform.io/-/acme registry.terraform.io/getstackhead/acme
+
+Finally migrate the state to vault
+
+    bitte tf <workspace>-vault init
