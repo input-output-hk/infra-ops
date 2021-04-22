@@ -190,7 +190,7 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http https;
+          inherit (securityGroupRules) internet internal ssh http https wireguard;
         };
       };
     };

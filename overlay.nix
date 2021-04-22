@@ -30,8 +30,11 @@ inputs: final: prev: {
       consul
       consul-template
       direnv
-      nixFlakes
       jq
+      go
+      goimports
+      gopls
+      gocode
     ];
   };
 

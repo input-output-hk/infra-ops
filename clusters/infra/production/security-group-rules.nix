@@ -88,5 +88,11 @@ in {
       port = 4646;
       cidrs = internal;
     };
+
+    wireguard = {
+      protocols = [ "udp" ];
+      port = 14216;
+      cidrs = global;
+    };
   };
 }
