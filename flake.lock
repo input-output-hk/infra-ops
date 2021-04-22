@@ -3,29 +3,29 @@
     "bitte": {
       "inputs": {
         "bitte-cli": "bitte-cli",
-        "crystal": [
-          "bitte",
-          "bitte-cli",
-          "crystal"
-        ],
         "inclusive": "inclusive",
         "levant-source": "levant-source",
         "nix": "nix",
         "nixpkgs": "nixpkgs_4",
         "nixpkgs-terraform": "nixpkgs-terraform",
+        "nixpkgs-unstable": "nixpkgs-unstable",
         "nomad-source": "nomad-source",
         "ops-lib": "ops-lib",
         "terranix": "terranix",
         "utils": "utils_3"
       },
       "locked": {
-        "narHash": "sha256-I+/KHq4bADFbMHJgp3eYujon5FKC6UXSPtTMUhHOIhU=",
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "lastModified": 1619020290,
+        "narHash": "sha256-/N6e2XGG97+yL/7SR5+9/kfelpiIft3tA/Fgl/XQu/c=",
+        "owner": "input-output-hk",
+        "repo": "bitte",
+        "rev": "523d8e9eac435b19e6980fa0f900a081c02a56da",
+        "type": "github"
       },
       "original": {
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "owner": "input-output-hk",
+        "repo": "bitte",
+        "type": "github"
       }
     },
     "bitte-cli": {
@@ -137,13 +137,34 @@
     },
     "nixpkgs-terraform": {
       "locked": {
-        "narHash": "sha256-j8InLwtqcFPp8CU4ch4jXXr2JkUsy7LXRTx+E6PAqsM=",
-        "path": "/home/manveru/github/nixos/nixpkgs",
-        "type": "path"
+        "lastModified": 1614717568,
+        "narHash": "sha256-a8lJVguNDT8324CE4FE7G0NdWaA1kG1Sq8hw+PH/UHo=",
+        "owner": "manveru",
+        "repo": "nixpkgs",
+        "rev": "80cbbeff5eb5bc62afc61bb170e6d88cd450aec6",
+        "type": "github"
       },
       "original": {
-        "path": "/home/manveru/github/nixos/nixpkgs",
-        "type": "path"
+        "owner": "manveru",
+        "ref": "iohk-terraform",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1619042025,
+        "narHash": "sha256-LXB7u/Nej080M1cfpjy8GNz01pzO/gnJsLAswv60Hpo=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "f73da2880a93dc24e185297a6af747efdeac5f01",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs_2": {
