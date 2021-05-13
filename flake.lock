@@ -14,13 +14,18 @@
         "utils": "utils_2"
       },
       "locked": {
-        "narHash": "sha256-k3asD7Js1hRwrAelgCBb8pdrxqoo+4WwWp+FK+L1Qh4=",
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "lastModified": 1620732621,
+        "narHash": "sha256-RIajh98Z90uw0mHSdDOtncoBIupQPEdNaxtN0FoAX5w=",
+        "owner": "input-output-hk",
+        "repo": "bitte",
+        "rev": "deefaccc5f9367037e0ab671b0e190cdc53f245b",
+        "type": "github"
       },
       "original": {
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "owner": "input-output-hk",
+        "ref": "glusterfs",
+        "repo": "bitte",
+        "type": "github"
       }
     },
     "bitte-cli": {
