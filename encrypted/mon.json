@@ -1,0 +1,23 @@
+{
+	"mon_keyring": "ENC[AES256_GCM,data:2sVSQPVp1jhIT4Vr6z1PUXhY8XGAA4cWRAv8ZHMHevB8Fiw05dinMqlwA5VBIbZ/wsT0kFAHi0imJITefyQqi1mS1Uoil+DODgmuUE1DwetiF6qToaIQ7Bvd23xwTAnCA7epwr+rUQrgieM4qVmeJ8Q2oF2GkBpyPjS8pGP5kYLhtbRavaJ1zr/MWUtIErAp8UMA7yJEHuL1Uge+VY4ARl5m1Z+1Dx1gCR76OYrC2O+H5wX9Z81Qju3HzF3z0wtYqDTFJ/QGeiHhQK/TKuus0u2/G3QK0QfCJT5Q/57eIc7lhCskPB9mFx1WyOz/pD1mHqa0LC1cUS1nroEQm0eghoBh6yqcWzb5sElhRsz6oN8IXDZulrOQ59RoXgQVqbKTKXS3Te0czKS32q2fJfvOH1ZzB35XEKZ+dnL1RAfHCZVjF4n469wLu2Dk/DNdxlT0mPu+6flN+GJLXGNbkjUtEkZ9NVE=,iv:PyUiozu4qRxc+ugbC5dBTkXAEX+iokCNEOaOXkGNHY4=,tag:OkrMzYaF8G26vJ2Sql6xsg==,type:str]",
+	"client_admin_keyring": "ENC[AES256_GCM,data:s7bMTWhE8njdv2ArPoibpFmtkAHb9ohl7lMonC74FPBwkZZ6MzjhCZJ2Mbh4QfYNdGG1E8rwhXRQD5M4n54WVzmczR/QikF2kfLZVVRr2gEO/keZrpuLNxVyjykNdgK629kBLMaiINarDZFhqPfe8TE2iNB16DdD3mevy6Y1UhUsCTR5IQKuvIr1yIM5yb2UvKBTuxPX,iv:m98TLZNU7QQTxWhPHNuw0MGQiXaHFquDr9X6Iq4xFWw=,tag:lNM5FY0y0DJHVueVKssakQ==,type:str]",
+	"keyring": "ENC[AES256_GCM,data:FSvb/IdwhGh5BY7n/L9sag/+XesRZNGxnE0/gNH7QK9JBIC3I6s/K/NRvJytJcP61OEnwrvXvc7vELxlbH2EoM0K1YQT1zOpNzfsriW75aX+wPSY7y+JD7Fz+uCwEaXJaQOtHSzLPBAyAUNPMB9wm/poi/++XOiPAwJiUe9Mzc0=,iv:ZjCz/QQSiv/JKETqq4KJW+ocCYROp4H+KNyeYflkmsc=,tag:sjAjoY0BIa35N/GIJc51NQ==,type:str]",
+	"sops": {
+		"kms": [
+			{
+				"arn": "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966",
+				"created_at": "2021-04-26T10:20:30Z",
+				"enc": "AQICAHiRgV5gAgjyESyjuAN8y8V+E0RmSRVpxsJNsbTkQQUjsQHLAPuqRT4SoQu/M2nA8STxAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMyajcAjEvMnjBnPdnAgEQgDuOME+VL5L7pwY+r+6wlkwWZEL+Vg5dI6/rj1gEjqovjzznxycqhL82xPXyoqVQKD23yFrs9SkRbmyEzQ==",
+				"aws_profile": ""
+			}
+		],
+		"gcp_kms": null,
+		"azure_kv": null,
+		"hc_vault": null,
+		"lastmodified": "2021-04-26T10:20:30Z",
+		"mac": "ENC[AES256_GCM,data:KC6Swe22HOzLEuLp7hyd4ZG8tpN5lbmFeUpS/MK786YC3Xx5BLZLSK/nm8OOReVVVUCXY2xJ2X2JGtlJm8vWSr4KCli/v/B0W9qA07SdQecJ5MENjX4QgmX3CisvBA6ezrmV7Ma8w6uoAK/GE+kSSrEXCTmQfN+tEoozKfvfL54=,iv:93wXczMjWae/C4wXTng/D+9ghwg6x31ZwjVVh5cqD2U=,tag:ChroOCRgED2sH4jnHziioQ==,type:str]",
+		"pgp": null,
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.6.0"
+	}
+}

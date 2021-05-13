@@ -7,6 +7,9 @@ let
 
   bitte = self.inputs.bitte;
 in {
+
+  imports = [ ./vault-raft-storage.nix ./secrets.nix ];
+
   services.consul.policies.developer.servicePrefix."infra-" = {
     policy = "write";
     intentions = "write";
@@ -18,8 +21,38 @@ in {
   services.vault.policies = {
     admin.path."secret/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
-    terraform.path."secret/vbk/*".capabilities =
+    terraform.path."secret/data/vbk/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
+  };
+
+  tf.core.configuration = let
+    mkStorage = name: {
+      availability_zone = var "aws_instance.${name}.availability_zone";
+      encrypted = true;
+      iops = 3000; # 3000..16000
+      size = 2; # GiB
+      type = "gp3";
+      kms_key_id = cluster.kms;
+      throughput = 125; # 125..1000 MiB/s
+    };
+
+    mkAttachment = name: {
+      device_name = "/dev/sdh";
+      volume_id = var "aws_ebs_volume.${name}.id";
+      instance_id = var "aws_instance.${name}.id";
+    };
+  in {
+    resource.aws_volume_attachment = {
+      storage-0 = mkAttachment "storage-0";
+      storage-1 = mkAttachment "storage-1";
+      storage-2 = mkAttachment "storage-2";
+    };
+
+    resource.aws_ebs_volume = {
+      storage-0 = mkStorage "storage-0";
+      storage-1 = mkStorage "storage-1";
+      storage-2 = mkStorage "storage-2";
+    };
   };
 
   tf.infra.configuration = {
@@ -31,7 +64,8 @@ in {
         unlock_address = vbk;
       };
 
-    terraform.required_providers = pkgs.terraform-provider-versions;
+    terraform.required_providers =
+      lib.getAttrs [ "aws" "vault" ] pkgs.terraform-provider-versions;
 
     provider = {
       aws = [{ region = config.cluster.region; }] ++ (lib.forEach regions
@@ -46,6 +80,16 @@ in {
     resource.vault_github_auth_backend.terraform = {
       organization = "input-output-hk";
       path = "github-terraform";
+      tune = [{
+        max_lease_ttl = "24h";
+        default_lease_ttl = "12h";
+        allowed_response_headers = null;
+        audit_non_hmac_request_keys = null;
+        audit_non_hmac_response_keys = null;
+        listing_visibility = null;
+        passthrough_request_headers = null;
+        token_type = "default-service";
+      }];
     };
 
     resource.vault_github_team.devops = {
@@ -114,7 +158,6 @@ in {
             self.inputs.ops-lib.nixosModules.zfs-runtime
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-            ./secrets.nix
           ];
 
           securityGroupRules = {
@@ -132,12 +175,8 @@ in {
         privateIP = "172.16.0.10";
         subnet = cluster.vpc.subnets.core-1;
 
-        modules = [
-          (bitte + /profiles/core.nix)
-          (bitte + /profiles/bootstrapper.nix)
-          ./secrets.nix
-          ./vault-raft-storage.nix
-        ];
+        modules =
+          [ (bitte + /profiles/core.nix) (bitte + /profiles/bootstrapper.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -149,11 +188,7 @@ in {
         privateIP = "172.16.1.10";
         subnet = cluster.vpc.subnets.core-2;
 
-        modules = [
-          (bitte + /profiles/core.nix)
-          ./secrets.nix
-          ./vault-raft-storage.nix
-        ];
+        modules = [ (bitte + /profiles/core.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -165,11 +200,7 @@ in {
         privateIP = "172.16.2.10";
         subnet = cluster.vpc.subnets.core-3;
 
-        modules = [
-          (bitte + /profiles/core.nix)
-          ./secrets.nix
-          ./vault-raft-storage.nix
-        ];
+        modules = [ (bitte + /profiles/core.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -183,14 +214,50 @@ in {
         volumeSize = 40;
         route53.domains = [ "*.${cluster.domain}" ];
 
-        modules = [
-          (bitte + /profiles/monitoring.nix)
-          ./secrets.nix
-          ./vault-backend.nix
-        ];
+        modules = [ (bitte + /profiles/monitoring.nix) ./vault-backend.nix ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http https wireguard;
+          inherit (securityGroupRules)
+            internet internal ssh http https wireguard;
+        };
+      };
+
+      storage-0 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.0.30";
+        subnet = cluster.vpc.subnets.core-1;
+        volumeSize = 40;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
+        };
+      };
+
+      storage-1 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.1.20";
+        subnet = cluster.vpc.subnets.core-2;
+        volumeSize = 40;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
+        };
+      };
+
+      storage-2 = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.2.20";
+        subnet = cluster.vpc.subnets.core-3;
+        volumeSize = 40;
+
+        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules) internal internet ssh;
         };
       };
     };

@@ -3,7 +3,6 @@
     "bitte": {
       "inputs": {
         "bitte-cli": "bitte-cli",
-        "inclusive": "inclusive",
         "levant-source": "levant-source",
         "nix": "nix",
         "nixpkgs": "nixpkgs_3",
@@ -15,17 +14,13 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1619104524,
-        "narHash": "sha256-Qn1Y6r5UHg5zv9V1kZ0+ji07LeIpL08qaUY6zz7JTmA=",
-        "owner": "input-output-hk",
-        "repo": "bitte",
-        "rev": "c508d64bdfb745ce805f528a5d3775fbf46a9221",
-        "type": "github"
+        "narHash": "sha256-k3asD7Js1hRwrAelgCBb8pdrxqoo+4WwWp+FK+L1Qh4=",
+        "path": "/home/manveru/github/input-output-hk/bitte",
+        "type": "path"
       },
       "original": {
-        "owner": "input-output-hk",
-        "repo": "bitte",
-        "type": "github"
+        "path": "/home/manveru/github/input-output-hk/bitte",
+        "type": "path"
       }
     },
     "bitte-cli": {
@@ -35,34 +30,16 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1617817989,
-        "narHash": "sha256-XjsU/RY2e4LocBR2EwD+5N2pi7EEWb0QgdD5Q9njzyI=",
+        "lastModified": 1619793403,
+        "narHash": "sha256-z8x+sHkflxOh2HEP0p15LphriEwOLwUcjt4fZE9NoRs=",
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "rev": "51dde043ab9a42ce5bb92cf1bd6c112b4f92d940",
+        "rev": "9f5727b2bfe7ec271e27f0c4a3382e3f69c905f6",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
         "repo": "bitte-cli",
-        "type": "github"
-      }
-    },
-    "inclusive": {
-      "inputs": {
-        "stdlib": "stdlib"
-      },
-      "locked": {
-        "lastModified": 1594133516,
-        "narHash": "sha256-4Z9XU8QRmTU7LldCxwRqkEH5pHJwgW8XmMvqu4t2DEg=",
-        "owner": "input-output-hk",
-        "repo": "nix-inclusive",
-        "rev": "11d05e4f1ca04fd250a9734e27970ad73bbd872d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "nix-inclusive",
         "type": "github"
       }
     },
@@ -120,16 +97,16 @@
     },
     "nixpkgs-terraform": {
       "locked": {
-        "lastModified": 1614717568,
-        "narHash": "sha256-a8lJVguNDT8324CE4FE7G0NdWaA1kG1Sq8hw+PH/UHo=",
+        "lastModified": 1620395313,
+        "narHash": "sha256-zaNy1ZD0WNKon3ZmEEte7z74CE6PWmQ8XltwuTMGDMI=",
         "owner": "manveru",
         "repo": "nixpkgs",
-        "rev": "80cbbeff5eb5bc62afc61bb170e6d88cd450aec6",
+        "rev": "316b82563a7793a4a88bed9e41adb936d9adc969",
         "type": "github"
       },
       "original": {
         "owner": "manveru",
-        "ref": "iohk-terraform",
+        "ref": "updated-terraform-providers",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -184,11 +161,11 @@
     "nomad-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1614345990,
-        "narHash": "sha256-zQ5uA0fEwZF2yiXYnWN5Y9NvBEPSZ+lvJ5D3zU4Z2WI=",
+        "lastModified": 1619804772,
+        "narHash": "sha256-Zm4IPjcSCCTquQD04veJVS+YsZWAqddFk4xd2l9GjD4=",
         "owner": "manveru",
         "repo": "nomad",
-        "rev": "437981c0f478ec4305acb7e2f8e51e325bdfd064",
+        "rev": "06cf845a5c71147f76be3b2b39c61c1b4f6b0dea",
         "type": "github"
       },
       "original": {
@@ -272,21 +249,6 @@
         "owner": "input-output-hk",
         "ref": "work",
         "repo": "rust.nix",
-        "type": "github"
-      }
-    },
-    "stdlib": {
-      "locked": {
-        "lastModified": 1590026685,
-        "narHash": "sha256-E5INrVvYX/P/UpcoUFDAsuHem+lsqT+/teBs9O7oc9Q=",
-        "owner": "manveru",
-        "repo": "nix-lib",
-        "rev": "99088cf7febcdb21afd375a335dcafa959bef3ed",
-        "type": "github"
-      },
-      "original": {
-        "owner": "manveru",
-        "repo": "nix-lib",
         "type": "github"
       }
     },
