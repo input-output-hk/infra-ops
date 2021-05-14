@@ -38,6 +38,8 @@ inputs: final: prev: {
     ];
   };
 
+  hydra-unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.hydra-unstable;
+
   # Used for caching
   devShellPath = prev.symlinkJoin {
     paths = final.devShell.buildInputs ++ [ final.nixFlakes ];

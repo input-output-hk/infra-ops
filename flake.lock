@@ -14,11 +14,11 @@
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1620732621,
-        "narHash": "sha256-RIajh98Z90uw0mHSdDOtncoBIupQPEdNaxtN0FoAX5w=",
+        "lastModified": 1620942621,
+        "narHash": "sha256-sdV0XGq9fHkqPNlEQD+TdBHIoyDbzT5ICPWCcWV/cr4=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "deefaccc5f9367037e0ab671b0e190cdc53f245b",
+        "rev": "b6c6e5f3b513bbb171f1793f29724da689bac27d",
         "type": "github"
       },
       "original": {
@@ -132,6 +132,21 @@
         "type": "github"
       }
     },
+    "nixpkgs-unstable_2": {
+      "locked": {
+        "lastModified": 1620950790,
+        "narHash": "sha256-iv+vesKK/8kqb5yK1vbYkMd1RQnDIO4wcbbmnoVlMRI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "1cdf5f44364fe06ce3d0cded1d784e132e6f3354",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "nixpkgs-unstable",
+        "type": "indirect"
+      }
+    },
     "nixpkgs_2": {
       "locked": {
         "lastModified": 1602702596,
@@ -225,6 +240,7 @@
           "bitte",
           "nixpkgs"
         ],
+        "nixpkgs-unstable": "nixpkgs-unstable_2",
         "ops-lib": "ops-lib_2",
         "terranix": [
           "bitte",

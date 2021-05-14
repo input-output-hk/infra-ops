@@ -4,6 +4,7 @@
   inputs = {
     bitte.url = "github:input-output-hk/bitte/glusterfs";
     bitte-cli.follows = "bitte/bitte-cli";
+    nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
     terranix.follows = "bitte/terranix";
     utils.follows = "bitte/utils";
