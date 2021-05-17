@@ -212,7 +212,13 @@ in {
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
-        route53.domains = [ "*.${cluster.domain}" ];
+        route53.domains = [
+          "consul.${cluster.domain}"
+          "docker.${cluster.domain}"
+          "monitoring.${cluster.domain}"
+          "nomad.${cluster.domain}"
+          "vault.${cluster.domain}"
+        ];
 
         modules = [ (bitte + /profiles/monitoring.nix) ./vault-backend.nix ];
 
@@ -233,8 +239,7 @@ in {
           [ (bitte + /profiles/routing.nix) ./secrets.nix ./traefik.nix ];
 
         securityGroupRules = {
-          inherit (securityGroupRules)
-            internet internal ssh http routing;
+          inherit (securityGroupRules) internet internal ssh http routing;
         };
       };
 
@@ -244,9 +249,7 @@ in {
         privateIP = "172.16.0.52";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 600;
-        route53.domains = [
-          "hydra-wg.${cluster.domain}"
-        ];
+        route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
         modules =
           [ (bitte + /profiles/monitoring.nix) ./secrets.nix ./hydra.nix ];
