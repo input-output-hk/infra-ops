@@ -89,6 +89,13 @@ in {
       cidrs = internal;
     };
 
+    routing = {
+      from = 10000;
+      to = 20000;
+      protocols = [ "tcp" "udp" ];
+      cidrs = global;
+    };
+
     wireguard = {
       protocols = [ "udp" ];
       port = 14216;

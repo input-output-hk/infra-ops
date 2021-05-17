@@ -8,7 +8,7 @@ let
   bitte = self.inputs.bitte;
 in {
 
-  imports = [ ./vault-raft-storage.nix ./secrets.nix ];
+  imports = [ ./vault-raft-storage.nix ./secrets.nix ./iam.nix ];
 
   services.consul.policies.developer.servicePrefix."infra-" = {
     policy = "write";
@@ -219,6 +219,22 @@ in {
         securityGroupRules = {
           inherit (securityGroupRules)
             internet internal ssh http https wireguard;
+        };
+      };
+
+      routing = {
+        instanceType = "t3a.small";
+        privateIP = "172.16.1.40";
+        subnet = cluster.vpc.subnets.core-2;
+        volumeSize = 100;
+        route53.domains = [ "*.${cluster.domain}" ];
+
+        modules =
+          [ (bitte + /profiles/routing.nix) ./secrets.nix ./traefik.nix ];
+
+        securityGroupRules = {
+          inherit (securityGroupRules)
+            internet internal ssh http routing;
         };
       };
 
