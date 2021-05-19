@@ -218,6 +218,7 @@ in {
           "monitoring.${cluster.domain}"
           "nomad.${cluster.domain}"
           "vault.${cluster.domain}"
+          "vbk.${cluster.domain}"
         ];
 
         modules = [ (bitte + /profiles/monitoring.nix) ./vault-backend.nix ];
