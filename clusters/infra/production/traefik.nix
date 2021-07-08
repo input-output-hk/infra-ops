@@ -1,47 +1,6 @@
 { self, lib, pkgs, config, ... }:
 let domain = config.cluster.domain;
 in {
-  imports = [
-    (self.inputs.bitte + /profiles/common.nix)
-    (self.inputs.bitte + /profiles/consul/client.nix)
-    (self.inputs.bitte + /profiles/secrets.nix)
-    (self.inputs.bitte + /profiles/telegraf.nix)
-    (self.inputs.bitte + /profiles/vault/client.nix)
-    ./secrets.nix
-  ];
-
-  services.amazon-ssm-agent.enable = true;
-
-  services.vault-agent-core = {
-    enable = true;
-    vaultAddress = "https://${config.cluster.instances.core-1.privateIP}:8200";
-  };
-
-  systemd.services.copy-acme-certs = {
-    before = [ "traefik.service" ];
-    wantedBy = [ "traefik.service" ];
-
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = lib.mkForce true;
-      Restart = "on-failure";
-      RestartSec = "30s";
-    };
-
-    path = [ pkgs.coreutils ];
-
-    script = ''
-      set -exuo pipefail
-
-      mkdir -p /var/lib/traefik/certs
-      cp /etc/ssl/certs/${config.cluster.domain}-*.pem /var/lib/traefik/certs
-      chown -R traefik:traefik /var/lib/traefik
-    '';
-  };
-
-  services.oauth2_proxy.extraConfig.skip-provider-button = "true";
-  services.oauth2_proxy.extraConfig.upstream = "static://202";
-
   services.traefik = {
     enable = true;
 
@@ -81,6 +40,22 @@ in {
             tls = true;
           };
 
+          bitte-ci = {
+            entrypoints = "https";
+            middlewares = [ "oauth-auth-redirect" ];
+            rule = "Host(`ci.${domain}`) && PathPrefix(`/`)";
+            service = "bitte-ci";
+            tls = true;
+          };
+
+          bitte-ci-hook = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`ci.${domain}`) && PathPrefix(`/api/v1/github`)";
+            service = "bitte-ci";
+            tls = true;
+          };
+
           traefik = {
             entrypoints = "https";
             middlewares = [ "oauth-auth-redirect" ];
@@ -113,6 +88,9 @@ in {
           hydra = {
             loadBalancer = { servers = [{ url = "http://${config.cluster.instances.hydra.privateIP}:3001"; }]; };
           };
+          bitte-ci = {
+            loadBalancer = { servers = [{ url = "http://${config.cluster.instances.hydra.privateIP}:9494"; }]; };
+          };
         };
       };
     };
@@ -144,4 +122,30 @@ in {
       };
     };
   };
+
+  systemd.services.copy-acme-certs = {
+    before = [ "traefik.service" ];
+    wantedBy = [ "traefik.service" ];
+
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = lib.mkForce true;
+      Restart = "on-failure";
+      RestartSec = "30s";
+    };
+
+    path = [ pkgs.coreutils ];
+
+    script = ''
+      set -exuo pipefail
+
+      mkdir -p /var/lib/traefik/certs
+      cp /etc/ssl/certs/${config.cluster.domain}-*.pem /var/lib/traefik/certs
+      chown -R traefik:traefik /var/lib/traefik
+    '';
+  };
+
+  services.oauth2_proxy.extraConfig.skip-provider-button = "true";
+  services.oauth2_proxy.extraConfig.upstream = "static://202";
+
 }

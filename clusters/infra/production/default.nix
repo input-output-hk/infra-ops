@@ -18,6 +18,14 @@ in {
   services.nomad.policies.admin.namespace."infra-*".policy = "write";
   services.nomad.policies.developer.namespace."infra-*".policy = "write";
 
+  services.nomad.policies.bitte-ci = {
+    description = "Bitte CI (Run Jobs and monitor them)";
+    namespace.default = {
+      policy = "read";
+      capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+    };
+  };
+
   services.vault.policies = {
     admin.path."secret/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
@@ -132,7 +140,7 @@ in {
       # NOTE: Regions with < 3 AZs not yet supported
       {
         region = "eu-central-1";
-        desiredCapacity = 0;
+        desiredCapacity = 1;
       }
       {
         region = "us-east-2";
@@ -158,6 +166,7 @@ in {
             self.inputs.ops-lib.nixosModules.zfs-runtime
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
+            ./client.nix
           ];
 
           securityGroupRules = {
@@ -236,8 +245,7 @@ in {
         volumeSize = 100;
         route53.domains = [ "*.${cluster.domain}" ];
 
-        modules =
-          [ (bitte + /profiles/routing.nix) ./secrets.nix ./traefik.nix ];
+        modules = [ (bitte + /profiles/routing.nix) ./traefik.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh http routing;
@@ -253,12 +261,10 @@ in {
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
         modules =
-          [ (bitte + /profiles/monitoring.nix) ./secrets.nix ./hydra.nix ];
+          [ (bitte + /profiles/monitoring.nix) ./hydra.nix ./bitte-ci.nix ];
 
         securityGroupRules = {
-          inherit (securityGroupRules)
-          # http https
-            internet internal ssh wireguard;
+          inherit (securityGroupRules) internet internal ssh wireguard;
         };
       };
 

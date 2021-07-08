@@ -3,9 +3,12 @@
 
   inputs = {
     utils.url = "github:kreisys/flake-utils";
-    bitte.url = "github:input-output-hk/bitte/fix-hydra";
+    bitte.url = "github:input-output-hk/bitte/nix-driver-with-profiles";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
+    bitte-ci.url = "github:input-output-hk/bitte-ci";
+    bitte-ci-frontend.follows = "bitte-ci/bitte-ci-frontend";
+    ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
   };
 
   outputs = { self, nixpkgs, utils, bitte, ... }@inputs:

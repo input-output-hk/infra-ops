@@ -7,7 +7,7 @@
     "${pkgs.sops}/bin/sops --encrypt --input-type binary --kms '${kms}'";
 
 in {
-  boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
+  # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
 
   secrets.install = {
     # id_buildfarm = rec {
