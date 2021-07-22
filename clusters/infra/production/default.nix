@@ -31,6 +31,10 @@ in {
       [ "create" "read" "update" "delete" "list" ];
     terraform.path."secret/data/vbk/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
+    vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
+      [ "create" "read" "update" "delete" "list" ];
+    vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
+      [ "create" "read" "update" "delete" "list" ];
   };
 
   tf.core.configuration = let
@@ -104,6 +108,12 @@ in {
       backend = var "vault_github_auth_backend.terraform.path";
       team = "devops";
       policies = [ "terraform" ];
+    };
+
+    resource.vault_github_team.jormungandr-devops = {
+      backend = var "vault_github_auth_backend.terraform.path";
+      team = "jormungandr-devops";
+      policies = [ "vit-terraform" ];
     };
   };
 
