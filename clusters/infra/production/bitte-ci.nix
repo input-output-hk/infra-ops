@@ -10,7 +10,8 @@
       contents = ''
         {{- with secret "nomad/creds/bitte-ci" }}{{ .Data.secret_id }}{{ end -}}
       '';
-      command = "${pkgs.systemd}/bin/systemctl restart bitte-ci-server bitte-ci-listener";
+      command =
+        "${pkgs.systemd}/bin/systemctl restart bitte-ci-server bitte-ci-listener";
     };
 
     bitte-ci = {
@@ -27,6 +28,7 @@
       nomadSslCa = "/etc/ssl/certs/ca.pem";
       nomadSslKey = "/etc/ssl/certs/cert-key.pem";
       nomadSslCert = "/etc/ssl/certs/cert.pem";
+      nomadDatacenters = [ "eu-central-1" ];
     };
 
     postgresql = {
@@ -52,7 +54,7 @@
     source = config.secrets.encryptedRoot + "/bitte-ci.json";
     target = "/run/keys/bitte-ci.json";
     script = ''
-      export PATH="${lib.makeBinPath [pkgs.jq]}"
+      export PATH="${lib.makeBinPath [ pkgs.jq ]}"
       jq -e -r .token < /run/keys/bitte-ci.json > /run/keys/bitte-ci.token
       jq -e -r .secret < /run/keys/bitte-ci.json > /run/keys/bitte-ci.secret
     '';

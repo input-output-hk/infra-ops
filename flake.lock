@@ -31,11 +31,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1625741413,
-        "narHash": "sha256-fltTPBnb6gmgDNg+SnYooyzBuudcuE2xtBm+Y/nx/2w=",
+        "lastModified": 1627411304,
+        "narHash": "sha256-uONw/lGb+HYX6sjXDWrpgNmMYr5UrfeX2eCaKpCGxgo=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "bb45476771c54e70883126d187586657e00a8b84",
+        "rev": "b2b04fd1fda05e36676e01b1dff9840805c64fad",
         "type": "github"
       },
       "original": {
@@ -50,16 +50,14 @@
         "arion": "arion",
         "bitte": "bitte_2",
         "bitte-ci-frontend": "bitte-ci-frontend",
-        "nixpkgs": "nixpkgs_15",
-        "rust": "rust",
-        "trigger-source": "trigger-source"
+        "nixpkgs": "nixpkgs_15"
       },
       "locked": {
-        "lastModified": 1626187393,
-        "narHash": "sha256-QjdJXILnXt4aQlm0dZuoi++aY406KkGTTGr3VhHhF94=",
+        "lastModified": 1627409181,
+        "narHash": "sha256-hHu2lUSymgPHM177Tf0J23u2CA5hsW1nRkTq20q2lPI=",
         "owner": "input-output-hk",
         "repo": "bitte-ci",
-        "rev": "71f01f54aefcb7e10a7aaab856e1bc8d156cf763",
+        "rev": "b22ff394aa93bc8b409c4faa1003b822c1332e05",
         "type": "github"
       },
       "original": {
@@ -73,11 +71,11 @@
         "nixpkgs": "nixpkgs_14"
       },
       "locked": {
-        "lastModified": 1626187366,
-        "narHash": "sha256-VKIBXUxjmB5JQ1gdReWBypAyyx51BeNveXlnJBqH6iU=",
+        "lastModified": 1626965959,
+        "narHash": "sha256-Uxa+osw7A/lFFHBhz6OzZnvZCPuXYM+ra0TwNhrKA94=",
         "owner": "input-output-hk",
         "repo": "bitte-ci-frontend",
-        "rev": "c7d361f84524327b184b32194c115589defec622",
+        "rev": "6b482d3109626954883d6e5940d802fdee228cf8",
         "type": "github"
       },
       "original": {
@@ -523,11 +521,11 @@
     },
     "nixpkgs_4": {
       "locked": {
-        "lastModified": 1625715381,
-        "narHash": "sha256-DezJ2e/7kDnDRAQ0YQjGGNSEcnxSWGS+6XrpAvabuuI=",
+        "lastModified": 1627398852,
+        "narHash": "sha256-D3xThw86i0ejhOAh/6sHKvmUgDlpDPhz6k/aVoOmOVc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "cbac9325423d50cb1e673051a197ae67ae971820",
+        "rev": "39a99c37d285d167a20938c20a51be3bb5a6be78",
         "type": "github"
       },
       "original": {
@@ -615,11 +613,11 @@
     "nomad-source": {
       "flake": false,
       "locked": {
-        "lastModified": 1625741254,
-        "narHash": "sha256-9YWAbe8+HqZvvQazEYLjkPMXEKxnWGg3kU26YqTbxWE=",
+        "lastModified": 1627411190,
+        "narHash": "sha256-cheZRUMhLqrwCV5t3hMJGyQrurSmPIhHGAzEt6A7+qA=",
         "owner": "input-output-hk",
         "repo": "nomad",
-        "rev": "4ea738722f3cefc606b9e8653fa8efda4db05695",
+        "rev": "758c3e852f174f38b1954f84d60ccb880a10cfa2",
         "type": "github"
       },
       "original": {
@@ -713,26 +711,6 @@
         "utils": "utils_7"
       }
     },
-    "rust": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1619723367,
-        "narHash": "sha256-VkjwqVj41JGj1SRSOMkYXEUhq5/Ybfvgaex5V5RCyrI=",
-        "owner": "input-output-hk",
-        "repo": "rust.nix",
-        "rev": "69a1b038ae9e247a5d8066762552eb11ed26ed4a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "input-output-hk",
-        "repo": "rust.nix",
-        "type": "github"
-      }
-    },
     "terranix": {
       "flake": false,
       "locked": {
@@ -764,22 +742,6 @@
         "owner": "manveru",
         "ref": "cleanup",
         "repo": "terranix",
-        "type": "github"
-      }
-    },
-    "trigger-source": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1595007670,
-        "narHash": "sha256-Ut/lRIIUT5mq4ZQhbzKOsfdWmao9wbFVXiOym2M3e8o=",
-        "owner": "RedL0tus",
-        "repo": "trigger",
-        "rev": "445214c9b49a1721c6e2a28bab125fa907dca484",
-        "type": "github"
-      },
-      "original": {
-        "owner": "RedL0tus",
-        "repo": "trigger",
         "type": "github"
       }
     },

@@ -56,6 +56,14 @@ in {
             tls = true;
           };
 
+          bitte-ci-oauth2-route = {
+            entrypoints = "https";
+            middlewares = [ "auth-headers" ];
+            rule = "Host(`ci.${domain}`) && PathPrefix(`/oauth2/`)";
+            service = "oauth-backend";
+            tls = true;
+          };
+
           traefik = {
             entrypoints = "https";
             middlewares = [ "oauth-auth-redirect" ];

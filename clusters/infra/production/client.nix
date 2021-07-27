@@ -1,7 +1,5 @@
-{ pkgs, ... }: {
-  services.nomad.client.chroot_env = {
-    "${builtins.unsafeDiscardStringContext pkgs.cacert}/etc/ssl/certs" =
-      "/etc/ssl/certs";
+{ pkgs, lib, ... }: {
+  services.nomad.client.chroot_env = lib.mkForce {
     "/etc/passwd" = "/etc/passwd";
   };
 }
