@@ -31,6 +31,8 @@ in {
       [ "create" "read" "update" "delete" "list" ];
     terraform.path."secret/data/vbk/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
+    terraform.path."secret/metadata/vbk/*".capabilities =
+      [ "delete" ];
     vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
     vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
