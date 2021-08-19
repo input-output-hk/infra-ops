@@ -31,8 +31,7 @@ in {
       [ "create" "read" "update" "delete" "list" ];
     terraform.path."secret/data/vbk/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
-    terraform.path."secret/metadata/vbk/*".capabilities =
-      [ "delete" ];
+    terraform.path."secret/metadata/vbk/*".capabilities = [ "delete" ];
     vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
       [ "create" "read" "update" "delete" "list" ];
     vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
@@ -167,7 +166,7 @@ in {
       let
         attrs = ({
           desiredCapacity = 1;
-          instanceType = "c5.2xlarge";
+          instanceType = "m5.8xlarge";
           associatePublicIP = true;
           maxInstanceLifetime = 0;
           iam.role = cluster.iam.roles.client;
