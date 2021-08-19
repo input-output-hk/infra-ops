@@ -1,4 +1,5 @@
-{ lib, config, pkgs, ... }: let
+{ lib, config, pkgs, ... }:
+let
   hydraURL = "https://hydra.${config.cluster.domain}";
   inherit (config.cluster) domain kms;
   cfg = config.services.hydra;
@@ -89,7 +90,8 @@ in {
   #   fi
   # '';
 
-  users.users.hydra.extraGroups = [ "keys" ];
+  users.users =
+    lib.mkIf config.services.hydra.enable { hydra.extraGroups = [ "keys" ]; };
 
   programs.ssh = {
     extraConfig = ''
@@ -158,22 +160,22 @@ in {
     #   common = {
     #     speedFactor       = 1;
     #     maxJobs           = 8;
-        # sshKey            = "/etc/nix/id_buildfarm";
-      # };
+    # sshKey            = "/etc/nix/id_buildfarm";
+    # };
 
-      # packet = flip genList 2 (i: common // {
-      #   hostName          = "mantis-slave-packet-${toString (i + 1)}.aws.iohkdev.io";
-      #   supportedFeatures = [ "benchmark" "kvm" "nixos-test" ];
-      #   sshUser           = "root";
-      #   system            = "x86_64-linux";
-      # });
+    # packet = flip genList 2 (i: common // {
+    #   hostName          = "mantis-slave-packet-${toString (i + 1)}.aws.iohkdev.io";
+    #   supportedFeatures = [ "benchmark" "kvm" "nixos-test" ];
+    #   sshUser           = "root";
+    #   system            = "x86_64-linux";
+    # });
 
-      # darwin = flip genList 2 (i: common // {
-      #   hostName = "mac-mini-${toString (i + 1)}";
-      #   sshUser = "builder";
-      #   system = "x86_64-darwin";
-      #   supportedFeatures = [ "big-parallel" ];
-      # });
+    # darwin = flip genList 2 (i: common // {
+    #   hostName = "mac-mini-${toString (i + 1)}";
+    #   sshUser = "builder";
+    #   system = "x86_64-darwin";
+    #   supportedFeatures = [ "big-parallel" ];
+    # });
     # in darwin;
     # in packet ++ darwin;
   };
@@ -188,10 +190,10 @@ in {
       '')
     ];
 
-    enable = true;
+    enable = false;
     port = 3001;
     logo = "${./iohk-logo.png}";
-    useSubstitutes     = true;
+    useSubstitutes = true;
     # listenHost = "127.0.0.1";
     # TODO enable notifications
     #notifications.enable = true;

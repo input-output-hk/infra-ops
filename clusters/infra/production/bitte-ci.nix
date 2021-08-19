@@ -16,14 +16,15 @@
 
     bitte-ci = {
       enable = true;
+      host = config.cluster.instances.hydra.privateIP;
       postgresUrl = "postgres://bitte_ci@/bitte_ci?host=/run/postgresql";
       publicUrl = "http://ci.${config.cluster.domain}";
       lokiUrl = "http://${config.cluster.instances.monitoring.privateIP}:3100";
       githubUser = "iohk-devops";
       githubTokenFile = "/run/keys/bitte-ci.token";
       nomadTokenFile = "/run/keys/bitte-ci.nomad";
+      artifactSecretFile = "/run/keys/bitte-ci.artifact";
       githubHookSecretFile = "/run/keys/bitte-ci.secret";
-      frontendPath = pkgs.bitte-ci-frontend;
       nomadUrl = "https://${config.cluster.instances.core-1.privateIP}:4646";
       nomadSslCa = "/etc/ssl/certs/ca.pem";
       nomadSslKey = "/etc/ssl/certs/cert-key.pem";
@@ -57,6 +58,7 @@
       export PATH="${lib.makeBinPath [ pkgs.jq ]}"
       jq -e -r .token < /run/keys/bitte-ci.json > /run/keys/bitte-ci.token
       jq -e -r .secret < /run/keys/bitte-ci.json > /run/keys/bitte-ci.secret
+      jq -e -r .artifact < /run/keys/bitte-ci.json > /run/keys/bitte-ci.artifact
     '';
   };
 }
