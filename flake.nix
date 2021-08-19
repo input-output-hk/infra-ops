@@ -1,9 +1,6 @@
 {
   description = "Bitte for infra-ops";
 
-  nixConfig.extra-substituters = "https://hydra.iohk.io https://hydra.mantis.ist";
-  nixConfig.extra-trusted-public-keys = "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= hydra.mantis.ist-1:4LTe7Q+5pm8+HawKxvmn2Hx0E3NbkYjtf1oWv+eAmTo=";
-
   inputs = {
     utils.url = "github:kreisys/flake-utils";
     bitte.url = "github:input-output-hk/bitte/nix-driver-with-profiles";
