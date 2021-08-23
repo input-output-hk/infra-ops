@@ -35,6 +35,17 @@
   * TODO: document creation of a new AMI image from ops-lib
 * Make note of the AMI ID in the selected region
 
+### TF authentication using cental vault instance
+
+```
+curl -s -X PUT -d '{"token":"$GITHUB_TOKEN"}' https://vault.infra.aws.iohkdev.io/v1/auth/github-employees/login
+```
+The `auth.client_token` field is what you're looking for
+```
+export TF_HTTP_USERNAME=TOKEN; export TF_HTTP_PASSWORD="$CLIENT_TOKEN"
+```
+This will allow you to interact with the remote terraform state located on the central vault instance.
+
 ## Standing up the cluster:
 
 ### Cluster setup
@@ -99,7 +110,7 @@ bitte terraform core apply
 
 * Generate the certs for the new cluster with:
 ```
-bitte certs --domain $DOMAIN
+bitte certs $DOMAIN
 ```
 
 * Deploy the terraform clients with:
