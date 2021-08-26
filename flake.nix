@@ -5,7 +5,6 @@
     utils.url = "github:kreisys/flake-utils";
     bitte.url = "github:input-output-hk/bitte/nix-driver-with-profiles";
     bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.5";
-    nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
     bitte-ci.url = "github:input-output-hk/bitte-ci";
     bitte-ci.inputs.bitte.follows = "bitte";
