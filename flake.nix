@@ -8,6 +8,7 @@
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
     bitte-ci.url = "github:input-output-hk/bitte-ci";
+    bitte-ci.inputs.bitte.follows = "bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     ipxed.url = "github:input-output-hk/ipxed";
   };
