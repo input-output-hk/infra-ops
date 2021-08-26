@@ -4,19 +4,20 @@
   inputs = {
     utils.url = "github:kreisys/flake-utils";
     bitte.url = "github:input-output-hk/bitte/nix-driver-with-profiles";
-    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.4";
+    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.5";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
     bitte-ci.url = "github:input-output-hk/bitte-ci";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
+    ipxed.url = "github:input-output-hk/ipxed";
   };
 
-  outputs = { self, nixpkgs, utils, bitte, ... }@inputs:
+  outputs = { self, nixpkgs, utils, bitte, ipxed, ... }@inputs:
     utils.lib.simpleFlake {
       inherit nixpkgs;
       systems = [ "x86_64-linux" ];
 
-      preOverlays = [ bitte ];
+      preOverlays = [ bitte ipxed ];
       overlay = import ./overlay.nix inputs;
 
       extraOutputs = let
@@ -34,6 +35,8 @@
 
       # simpleFlake ignores devShell if we don't specify this.
       packages = { }: { };
+
+      hydraJobs = { ipxed }@pkgs: pkgs;
 
       devShell = { bitteShellCompat }:
         (bitteShellCompat {
