@@ -83,11 +83,11 @@
         "nomad-src": "nomad-src"
       },
       "locked": {
-        "lastModified": 1629743520,
-        "narHash": "sha256-EEC7h5gYvZvaMWv6NjpojIJKw2AevMlA3Oa9QEu0jCY=",
+        "lastModified": 1629994988,
+        "narHash": "sha256-W/A3qBe/o/hUmw7/c74NiaXm0JxmtYzrz1HgK9vgLVs=",
         "owner": "input-output-hk",
         "repo": "bitte-ci",
-        "rev": "7b185eff7e073874fbc1eca2bc117e649bb2524c",
+        "rev": "f2c1df5e9af674c48e6863d96830ee6d2ffa5904",
         "type": "github"
       },
       "original": {
