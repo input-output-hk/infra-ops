@@ -1,6 +1,8 @@
 { self, lib, pkgs, config, ... }:
 let domain = config.cluster.domain;
 in {
+  services.consul.ui = true;
+
   services.traefik = {
     enable = true;
 
@@ -24,8 +26,11 @@ in {
           oauth-auth-redirect = {
             forwardAuth = {
               address = "https://oauth.${domain}/";
-              authResponseHeaders =
-                [ "X-Auth-Request-Access-Token" "Authorization" ];
+              authResponseHeaders = [
+                "X-Auth-Request-Email"
+                "X-Auth-Request-Access-Token"
+                "Authorization"
+              ];
               trustForwardHeader = true;
             };
           };
@@ -37,6 +42,62 @@ in {
             middlewares = [ "oauth-auth-redirect" ];
             rule = "Host(`hydra.${domain}`) && PathPrefix(`/`)";
             service = "hydra";
+            tls = true;
+          };
+
+          grafana = {
+            entrypoints = "https";
+            middlewares = [ "oauth-auth-redirect" ];
+            rule = "Host(`monitoring.${domain}`) && PathPrefix(`/`)";
+            service = "monitoring";
+            tls = true;
+          };
+
+          nomad = {
+            entrypoints = "https";
+            middlewares = [ "oauth-auth-redirect" ];
+            rule = "Host(`nomad.${domain}`) && PathPrefix(`/`)";
+            service = "nomad";
+            tls = true;
+          };
+
+          nomad-api = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`nomad.${domain}`) && PathPrefix(`/v1/`)";
+            service = "nomad";
+            tls = true;
+          };
+
+          vault = {
+            entrypoints = "https";
+            middlewares = [ "oauth-auth-redirect" ];
+            rule = "Host(`vault.${domain}`) && PathPrefix(`/`)";
+            service = "vault";
+            tls = true;
+          };
+
+          vault-api = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`vault.${domain}`) && PathPrefix(`/v1/`)";
+            service = "vault";
+            tls = true;
+          };
+
+          consul = {
+            entrypoints = "https";
+            middlewares = [ "oauth-auth-redirect" ];
+            rule = "Host(`consul.${domain}`) && PathPrefix(`/`)";
+            service = "consul";
+            tls = true;
+          };
+
+          consul-api = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`consul.${domain}`) && PathPrefix(`/v1/`)";
+            service = "consul";
             tls = true;
           };
 
@@ -80,24 +141,55 @@ in {
             tls = true;
           };
 
-          services-oauth2-route = {
+          oauth2-route = {
             entrypoints = "https";
             middlewares = [ "auth-headers" ];
-            rule = "Host(`traefik.${domain}`) && PathPrefix(`/oauth2/`)";
+            rule = "PathPrefix(`/oauth2/`)";
             service = "oauth-backend";
             tls = true;
           };
         };
 
         services = {
-          oauth-backend = {
-            loadBalancer = { servers = [{ url = "http://127.0.0.1:4180"; }]; };
+          oauth-backend.loadBalancer = {
+            servers = [{ url = "http://127.0.0.1:4180"; }];
           };
-          hydra = {
-            loadBalancer = { servers = [{ url = "http://${config.cluster.instances.hydra.privateIP}:3001"; }]; };
+
+          consul.loadBalancer = {
+            servers = [{ url = "http://127.0.0.1:8500"; }];
           };
-          bitte-ci = {
-            loadBalancer = { servers = [{ url = "http://${config.cluster.instances.hydra.privateIP}:9494"; }]; };
+
+          nomad.loadBalancer = {
+            servers = [{ url = "https://nomad.service.consul:4646"; }];
+            serversTransport = "cert-transport";
+          };
+
+          monitoring.loadBalancer = {
+            servers = [{ url = "http://monitoring:3000"; }];
+          };
+
+          vault.loadBalancer = {
+            servers = [{ url = "https://active.vault.service.consul:8200"; }];
+            serversTransport = "cert-transport";
+          };
+
+          hydra.loadBalancer = {
+            servers = [{
+              url = "http://${config.cluster.instances.hydra.privateIP}:3001";
+            }];
+          };
+
+          bitte-ci.loadBalancer = {
+            servers = [{
+              url = "http://${config.cluster.instances.hydra.privateIP}:9494";
+            }];
+          };
+        };
+
+        serversTransports = {
+          cert-transport = {
+            insecureSkipVerify = true;
+            rootCAs = [ "/etc/ssl/certs/full.pem" ];
           };
         };
       };
@@ -155,5 +247,4 @@ in {
 
   services.oauth2_proxy.extraConfig.skip-provider-button = "true";
   services.oauth2_proxy.extraConfig.upstream = "static://202";
-
 }

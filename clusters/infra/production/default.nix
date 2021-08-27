@@ -232,20 +232,22 @@ in {
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
-        route53.domains = [
-          "consul.${cluster.domain}"
-          "docker.${cluster.domain}"
-          "monitoring.${cluster.domain}"
-          "nomad.${cluster.domain}"
-          "vault.${cluster.domain}"
-          "vbk.${cluster.domain}"
+        route53.domains =
+          [ "docker.${cluster.domain}" "vbk.${cluster.domain}" ];
+
+        modules = [
+          (bitte + /profiles/monitoring.nix)
+          ./vault-backend.nix
+          {
+            services.grafana.extraOptions.AUTH_PROXY_HEADER_NAME =
+              lib.mkForce "X-Auth-Request-Email";
+            services.consul.logLevel = lib.mkForce "trace";
+          }
+          ./ipxe.nix
         ];
 
-        modules = [ (bitte + /profiles/monitoring.nix) ./vault-backend.nix ];
-
         securityGroupRules = {
-          inherit (securityGroupRules)
-            internet internal ssh http https wireguard;
+          inherit (securityGroupRules) internet internal ssh http https;
         };
       };
 
@@ -271,8 +273,7 @@ in {
         volumeSize = 600;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
-        modules =
-          [ (bitte + /profiles/monitoring.nix) ./hydra.nix ./bitte-ci.nix ];
+        modules = [ (bitte + /profiles/common.nix) ./bitte-ci.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh wireguard;
