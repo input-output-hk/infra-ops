@@ -57,13 +57,18 @@
         "utils": "utils_4"
       },
       "locked": {
-        "narHash": "sha256-4O8zdC5myOf1HduIrqMp9fY9DmvHEkqpAvMH/VB+vNU=",
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "lastModified": 1630082410,
+        "narHash": "sha256-Bh7wF7x3U23dQOHY/E03DsKRSEzsA9jHwTPHbXjmwP4=",
+        "owner": "input-output-hk",
+        "repo": "bitte",
+        "rev": "6507fa3893ba065816c18b26b44ebd1c70042e3e",
+        "type": "github"
       },
       "original": {
-        "path": "/home/manveru/github/input-output-hk/bitte",
-        "type": "path"
+        "owner": "input-output-hk",
+        "ref": "cleanup",
+        "repo": "bitte",
+        "type": "github"
       }
     },
     "bitte-ci": {
@@ -360,11 +365,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1630089706,
-        "narHash": "sha256-i3hR63QdgR06wNMlx4nht7Q2am4beAgPPswUf+lsCQw=",
+        "lastModified": 1630118530,
+        "narHash": "sha256-y+MH/szYP8R6vPj+v2sx2chtSA2tDDkuOSK/wy+AVXY=",
         "owner": "input-output-hk",
         "repo": "ipxed",
-        "rev": "0ef1f4d31f00993bfb47459d103035c28df1febc",
+        "rev": "d05c52981edaaaa9dc91a5fbe5e8aa35531901b1",
         "type": "github"
       },
       "original": {
