@@ -151,11 +151,11 @@ in {
       # NOTE: Regions with < 3 AZs not yet supported
       {
         region = "eu-central-1";
-        desiredCapacity = 1;
+        desiredCapacity = 2;
       }
       {
         region = "us-east-2";
-        desiredCapacity = 0;
+        desiredCapacity = 2;
       }
       # Only 2 AZs available for new customers
       #{
