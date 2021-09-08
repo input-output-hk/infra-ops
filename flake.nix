@@ -43,6 +43,7 @@
         (bitteShellCompat {
           inherit self;
           cluster = "infra-production";
+          namespace = "default";
           profile = "infra-ops";
           region = "us-west-1";
           domain = "infra.aws.iohkdev.io";
