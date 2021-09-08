@@ -244,10 +244,11 @@ in {
             services.consul.logLevel = lib.mkForce "trace";
           }
           ./ipxe.nix
+          ./nfs.nix
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http https;
+          inherit (securityGroupRules) internet internal ssh http https nfs;
         };
       };
 

@@ -101,5 +101,10 @@ in {
       port = 14216;
       cidrs = global;
     };
+
+    nfs = {
+      port = 2049;
+      protocols = [ "tcp" "udp" ];
+    };
   };
 }
