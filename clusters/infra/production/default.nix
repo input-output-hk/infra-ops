@@ -231,7 +231,7 @@ in {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
-        volumeSize = 40;
+        volumeSize = 100;
         route53.domains =
           [ "docker.${cluster.domain}" "vbk.${cluster.domain}" ];
 
