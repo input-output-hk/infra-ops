@@ -248,7 +248,8 @@ in {
         ];
 
         securityGroupRules = {
-          inherit (securityGroupRules) internet internal ssh http https nfs;
+          inherit (securityGroupRules)
+            internet internal ssh http https nfs-portmapper nfs;
         };
       };
 

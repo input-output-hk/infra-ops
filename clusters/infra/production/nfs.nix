@@ -7,12 +7,12 @@
   services.nfs.server = {
     enable = true;
     exports = ''
-      /export         196.188.117.34(rw,fsid=0,no_subtree_check) 185.66.51.109(rw,fsid=0,no_subtree_check)
-      /export/mafuyu  196.188.117.34(rw,nohide,insecure,no_subtree_check) 185.66.51.109(rw,nohide,insecure,no_subtree_check)
+      /export         107.77.198.19(rw,fsid=0,no_subtree_check) 196.188.122.164(rw,fsid=0,no_subtree_check) 185.66.51.109(rw,fsid=0,no_subtree_check)
+      /export/mafuyu  107.77.198.19(rw,nohide,insecure,no_subtree_check) 196.188.122.164(rw,nohide,insecure,no_subtree_check) 185.66.51.109(rw,nohide,insecure,no_subtree_check)
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 2049 ];
+  networking.firewall.allowedTCPPorts = [ 111 2049 ];
 }
 
 # let

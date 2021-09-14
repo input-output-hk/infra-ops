@@ -102,9 +102,16 @@ in {
       cidrs = global;
     };
 
+    nfs-portmapper = {
+      port = 111;
+      protocols = [ "tcp" "udp" ];
+      cidrs = global;
+    };
+
     nfs = {
       port = 2049;
       protocols = [ "tcp" "udp" ];
+      cidrs = global;
     };
   };
 }
