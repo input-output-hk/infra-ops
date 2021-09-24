@@ -6,6 +6,7 @@
     ingress-config.enable = lib.mkForce false;
     ingress.enable = lib.mkForce false;
 
+    vault-agent-core.enable = true;
     vault-agent.templates."/run/keys/bitte-ci.nomad" = {
       contents = ''
         {{- with secret "nomad/creds/bitte-ci" }}{{ .Data.secret_id }}{{ end -}}
@@ -29,7 +30,7 @@
       nomadSslCa = "/etc/ssl/certs/ca.pem";
       nomadSslKey = "/etc/ssl/certs/cert-key.pem";
       nomadSslCert = "/etc/ssl/certs/cert.pem";
-      nomadDatacenters = [ "eu-central-1" ];
+      nomadDatacenters = [ "eu-central-1" "us-east-2" ];
     };
 
     postgresql = {
