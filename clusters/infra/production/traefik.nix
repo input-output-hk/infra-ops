@@ -36,30 +36,35 @@ in {
           };
         };
 
-        routers = lib.mkForce {
-          hydra = {
+        routers = let
+          mkOauthRoute = service: {
+            inherit service;
             entrypoints = "https";
             middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`hydra.${domain}`) && PathPrefix(`/`)";
-            service = "hydra";
+            rule = "Host(`${service}.${domain}`) && PathPrefix(`/`)";
+            tls = true;
+          };
+        in lib.mkForce {
+          oauth2-route = {
+            entrypoints = "https";
+            middlewares = [ "auth-headers" ];
+            rule = "PathPrefix(`/oauth2/`)";
+            service = "oauth-backend";
+            priority = 999;
             tls = true;
           };
 
-          grafana = {
+          oauth2-proxy-route = {
             entrypoints = "https";
-            middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`monitoring.${domain}`) && PathPrefix(`/`)";
-            service = "monitoring";
+            middlewares = [ "auth-headers" ];
+            rule = "Host(`oauth.${domain}`) && PathPrefix(`/`)";
+            service = "oauth-backend";
             tls = true;
           };
 
-          nomad = {
-            entrypoints = "https";
-            middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`nomad.${domain}`) && PathPrefix(`/`)";
-            service = "nomad";
-            tls = true;
-          };
+          hydra = mkOauthRoute "hydra";
+          grafana = mkOauthRoute "monitoring";
+          nomad = mkOauthRoute "nomad";
 
           nomad-api = {
             entrypoints = "https";
@@ -69,13 +74,7 @@ in {
             tls = true;
           };
 
-          vault = {
-            entrypoints = "https";
-            middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`vault.${domain}`) && PathPrefix(`/`)";
-            service = "vault";
-            tls = true;
-          };
+          vault = mkOauthRoute "vault";
 
           vault-api = {
             entrypoints = "https";
@@ -85,13 +84,7 @@ in {
             tls = true;
           };
 
-          consul = {
-            entrypoints = "https";
-            middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`consul.${domain}`) && PathPrefix(`/`)";
-            service = "consul";
-            tls = true;
-          };
+          consul = mkOauthRoute "consul";
 
           consul-api = {
             entrypoints = "https";
@@ -117,35 +110,11 @@ in {
             tls = true;
           };
 
-          bitte-ci-oauth2-route = {
-            entrypoints = "https";
-            middlewares = [ "auth-headers" ];
-            rule = "Host(`ci.${domain}`) && PathPrefix(`/oauth2/`)";
-            service = "oauth-backend";
-            tls = true;
-          };
-
           traefik = {
             entrypoints = "https";
             middlewares = [ "oauth-auth-redirect" ];
             rule = "Host(`traefik.${domain}`) && PathPrefix(`/`)";
             service = "api@internal";
-            tls = true;
-          };
-
-          oauth2-proxy-route = {
-            entrypoints = "https";
-            middlewares = [ "auth-headers" ];
-            rule = "Host(`oauth.${domain}`) && PathPrefix(`/`)";
-            service = "oauth-backend";
-            tls = true;
-          };
-
-          oauth2-route = {
-            entrypoints = "https";
-            middlewares = [ "auth-headers" ];
-            rule = "PathPrefix(`/oauth2/`)";
-            service = "oauth-backend";
             tls = true;
           };
         };
