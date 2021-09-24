@@ -365,11 +365,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1630118530,
-        "narHash": "sha256-y+MH/szYP8R6vPj+v2sx2chtSA2tDDkuOSK/wy+AVXY=",
+        "lastModified": 1631027033,
+        "narHash": "sha256-e+fLR+w4yR6laTbZlW1h2pM+xqGhl0x36+saY18jZHc=",
         "owner": "input-output-hk",
         "repo": "ipxed",
-        "rev": "d05c52981edaaaa9dc91a5fbe5e8aa35531901b1",
+        "rev": "832a16b9bc640cb95424a2949a2bb2612467e197",
         "type": "github"
       },
       "original": {

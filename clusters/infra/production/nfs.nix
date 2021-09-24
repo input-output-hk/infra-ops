@@ -4,62 +4,18 @@
     options = [ "bind" ];
   };
 
-  services.nfs.server = {
+  services.nfs.server = let
+    ips = [ "172.58.61.27" "107.77.198.19" "196.188.122.164" "185.66.51.109" "18.220.75.60" ];
+    export = map (ip: "${ip}(rw,fsid=0,no_subtree_check)") ips;
+    mafuyu = map (ip: "${ip}(rw,nohide,insecure,no_subtree_check)") ips;
+  in {
     enable = true;
     exports = ''
-      /export         107.77.198.19(rw,fsid=0,no_subtree_check) 196.188.122.164(rw,fsid=0,no_subtree_check) 185.66.51.109(rw,fsid=0,no_subtree_check)
-      /export/mafuyu  107.77.198.19(rw,nohide,insecure,no_subtree_check) 196.188.122.164(rw,nohide,insecure,no_subtree_check) 185.66.51.109(rw,nohide,insecure,no_subtree_check)
+      /export         ${builtins.concatStringsSep " " export}
+      /export/mafuyu  ${builtins.concatStringsSep " " mafuyu}
     '';
   };
 
+
   networking.firewall.allowedTCPPorts = [ 111 2049 ];
 }
-
-# let
-#   stateDir = "/var/lib/nfs";
-#   ganeshaConfig = pkgs.writeText "ganesha.conf" ''
-#     EXPORT {
-#       Export_Id = 12345;
-#       Path = ${stateDir}/ganesha/export/moe;
-#       Pseudo = /moe;
-#       Protocols = 3,4;
-#       Access_Type = RW;
-#       FSAL {
-#         Name = VFS;
-#       }
-#     }
-#
-#     LOG {
-#       Default_Log_Level = INFO;
-#
-#       Facility {
-#         name = FILE;
-#         destination = "${stateDir}/ganesha/ganesha.log";
-#         enable = active;
-#       }
-#     }
-#   '';
-# in {
-#   environment.etc."ganesha/ganesha.conf".source = ganeshaConfig;
-#
-#   systemd.services.nfs-ganesha = {
-#     description = "Ganesha NFS Server";
-#     after = [ "network.target" ];
-#     wantedBy = [ "multi-user.target" ];
-#     restartTriggers = [ ganeshaConfig ];
-#
-#     serviceConfig = {
-#       ExecStartPre = pkgs.writeShellScript "nfs-ganehsa-pre" ''
-#         mkdir -p ${stateDir}/ganesha/export/moe
-#       '';
-#       ExecStart =
-#         "${pkgs.nfs-ganesha}/bin/ganesha.nfsd -F -p ${stateDir}/ganesha/ganesha.pid";
-#       Restart = "on-failure";
-#       RestartSec = "30s";
-#       # DynamicUser = true;
-#       # User = "ganesha";
-#       StateDirectory = "nfs";
-#       RuntimeDirectory = "nfs";
-#     };
-#   };
-# }
