@@ -238,13 +238,9 @@ in {
         modules = [
           (bitte + /profiles/monitoring.nix)
           ./vault-backend.nix
-          {
-            services.grafana.extraOptions.AUTH_PROXY_HEADER_NAME =
-              lib.mkForce "X-Auth-Request-Email";
-            services.consul.logLevel = lib.mkForce "trace";
-          }
           ./ipxe.nix
           ./nfs.nix
+          ./letsencrypt.nix
         ];
 
         securityGroupRules = {
@@ -260,7 +256,8 @@ in {
         volumeSize = 100;
         route53.domains = [ "*.${cluster.domain}" ];
 
-        modules = [ (bitte + /profiles/routing.nix) ./traefik.nix ];
+        modules =
+          [ (bitte + /profiles/routing.nix) ./traefik.nix ./letsencrypt.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh http routing;
