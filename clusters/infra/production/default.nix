@@ -24,6 +24,7 @@ in {
       policy = "read";
       capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
     };
+    node.policy = "read";
   };
 
   services.vault.policies = {
