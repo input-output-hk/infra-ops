@@ -11,10 +11,10 @@ job: {
 			}]
 
 			service: [{
-				name:         "liftbridge"
+				name:         "cicero"
 				address_mode: "auto"
 				port:         "http"
-				task:         "liftbridge"
+				task:         "cicero"
 				tags: [
 					"cicero",
 					"ingress",
