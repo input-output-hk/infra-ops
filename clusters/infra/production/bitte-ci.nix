@@ -26,7 +26,7 @@
       nomadTokenFile = "/run/keys/bitte-ci.nomad";
       artifactSecretFile = "/run/keys/bitte-ci.artifact";
       githubHookSecretFile = "/run/keys/bitte-ci.secret";
-      nomadUrl = "https://${config.cluster.instances.core-1.privateIP}:4646";
+      nomadUrl = "https://nomad.${config.cluster.domain}";
       nomadSslCa = "/etc/ssl/certs/ca.pem";
       nomadSslKey = "/etc/ssl/certs/cert-key.pem";
       nomadSslCert = "/etc/ssl/certs/cert.pem";

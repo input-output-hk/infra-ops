@@ -3,14 +3,15 @@
 
   inputs = {
     utils.url = "github:kreisys/flake-utils";
-    bitte.url = "github:input-output-hk/bitte/cleanup";
-    bitte.inputs.bitte-cli.url = "github:input-output-hk/bitte-cli/v0.3.5";
+    bitte.url = "github:input-output-hk/bitte";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nixpkgs.follows = "bitte/nixpkgs";
     bitte-ci.url = "github:input-output-hk/bitte-ci";
     bitte-ci.inputs.bitte.follows = "bitte";
     ops-lib.url = "github:input-output-hk/ops-lib/zfs-image?dir=zfs";
     ipxed.url = "github:input-output-hk/ipxed";
+    nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
+    nix-inclusive.url = "github:input-output-hk/nix-inclusive";
   };
 
   outputs = { self, nixpkgs, utils, bitte, ipxed, ... }@inputs:
@@ -35,11 +36,11 @@
       };
 
       # simpleFlake ignores devShell if we don't specify this.
-      packages = { }: { };
+      packages = { jobs }@pkgs: pkgs;
 
       hydraJobs = { ipxed }@pkgs: pkgs;
 
-      devShell = { bitteShellCompat }:
+      devShell = { bitteShellCompat, cue }:
         (bitteShellCompat {
           inherit self;
           cluster = "infra-production";
@@ -47,6 +48,7 @@
           profile = "infra-ops";
           region = "us-west-1";
           domain = "infra.aws.iohkdev.io";
+          extraPackages = [ cue ];
         });
     };
 }

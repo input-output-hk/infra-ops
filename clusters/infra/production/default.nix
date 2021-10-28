@@ -15,28 +15,49 @@ in {
     intentions = "write";
   };
 
-  services.nomad.policies.admin.namespace."infra-*".policy = "write";
-  services.nomad.policies.developer.namespace."infra-*".policy = "write";
-
-  services.nomad.policies.bitte-ci = {
-    description = "Bitte CI (Run Jobs and monitor them)";
-    namespace.default = {
-      policy = "read";
-      capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+  services.nomad.policies = {
+    admin.namespace."infra-*".policy = "write";
+    developer.namespace."infra-*".policy = "write";
+    bitte-ci = {
+      description = "Bitte CI (Run Jobs and monitor them)";
+      namespace.default = {
+        policy = "read";
+        capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+      };
+      node.policy = "read";
     };
-    node.policy = "read";
+
+    cicero = {
+      description = "Cicero (Run Jobs and monitor them)";
+      namespace.cicero = {
+        policy = "read";
+        capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+      };
+    };
   };
 
-  services.vault.policies = {
-    admin.path."secret/*".capabilities =
-      [ "create" "read" "update" "delete" "list" ];
-    terraform.path."secret/data/vbk/*".capabilities =
-      [ "create" "read" "update" "delete" "list" ];
-    terraform.path."secret/metadata/vbk/*".capabilities = [ "delete" ];
+  services.vault.policies = let
+    c = "create";
+    r = "read";
+    u = "update";
+    d = "delete";
+    l = "list";
+  in {
+    admin.path."secret/*".capabilities = [ c r u d l ];
+    terraform.path."secret/data/vbk/*".capabilities = [ c r u d l ];
+    terraform.path."secret/metadata/vbk/*".capabilities = [ d ];
     vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
-      [ "create" "read" "update" "delete" "list" ];
+      [ c r u d l ];
     vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
-      [ "create" "read" "update" "delete" "list" ];
+      [ c r u d l ];
+
+    cicero.path = {
+      "kv/data/cicero/*".capabilities = [ r l ];
+      "kv/metadata/cicero/*".capabilities = [ r l ];
+      "auth/token/renew-self".capabilities = [ u ];
+      "auth/token/lookup-self".capabilities = [ r ];
+      "auth/token/lookup".capabilities = [ u ];
+    };
   };
 
   tf.core.configuration = let
@@ -119,7 +140,10 @@ in {
     };
   };
 
-  services.nomad.namespaces = { infra-default.description = "Infra Default"; };
+  services.nomad.namespaces = {
+    infra-default.description = "Infra Default";
+    cicero.description = "Cicero";
+  };
 
   nix.binaryCaches = [
     "https://hydra.iohk.io"
@@ -175,7 +199,7 @@ in {
 
           modules = [
             (bitte + /profiles/client.nix)
-            self.inputs.ops-lib.nixosModules.zfs-runtime
+            (bitte + /profiles/zfs-runtime.nix)
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             ./client.nix
