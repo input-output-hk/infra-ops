@@ -5,8 +5,6 @@ import (
 )
 
 job: liftbridge: {
-	type: "service"
-
 	update: {
 		max_parallel:      1
 		health_check:      "checks"
@@ -22,11 +20,11 @@ job: liftbridge: {
 			#id:   number
 			#seed: bool
 
-			network: [{
+			network: {
 				mode: "host"
 				port: nats: static:       "4222"
 				port: liftbridge: static: "9292"
-			}]
+			}
 
 			service: [{
 				name:         "liftbridge"
@@ -57,10 +55,10 @@ job: liftbridge: {
 			task: liftbridge: {
 				driver: "nix"
 
-				resources: [{
+				resources: {
 					memory: 64
 					cpu:    200
-				}]
+				}
 
 				config: [{
 					packages: ["github:input-output-hk/cicero#liftbridge"]

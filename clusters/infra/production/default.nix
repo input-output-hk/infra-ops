@@ -52,11 +52,12 @@ in {
       [ c r u d l ];
 
     cicero.path = {
+      "auth/token/lookup".capabilities = [ u ];
+      "auth/token/lookup-self".capabilities = [ r ];
+      "auth/token/renew-self".capabilities = [ u ];
       "kv/data/cicero/*".capabilities = [ r l ];
       "kv/metadata/cicero/*".capabilities = [ r l ];
-      "auth/token/renew-self".capabilities = [ u ];
-      "auth/token/lookup-self".capabilities = [ r ];
-      "auth/token/lookup".capabilities = [ u ];
+      "nomad/creds/cicero".capabilities = [ r u ];
     };
   };
 

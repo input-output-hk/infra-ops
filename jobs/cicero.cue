@@ -5,10 +5,10 @@ job: {
 		type: "service"
 
 		group: cicero: {
-			network: [{
+			network: {
 				mode: "host"
 				port: http: static: "8080"
-			}]
+			}
 
 			service: [{
 				name:         "cicero"
@@ -39,14 +39,22 @@ job: {
 					change_mode: "restart"
 				}
 
-				resources: [{
+				resources: {
 					memory: 1024
 					cpu:    300
-				}]
+				}
+
+				env: {
+					DATABASE_URL:  "sqlite:db/database.sqlite3"
+					NIX_CONFIG:    "experimental-features = nix-command flakes"
+					SSL_CERT_FILE: "/current-profile/etc/ssl/certs/ca-bundle.crt"
+					NOMAD_ADDR:    "https://nomad.infra.aws.iohkdev.io"
+					VAULT_ADDR:    "https://vault.infra.aws.iohkdev.io"
+				}
 
 				config: [{
 					packages: [
-						"github:input-output-hk/cicero/91639e90a6746a880ed4c1d315385230f4ea68fd#defaultPackage.x86_64-linux",
+						"github:input-output-hk/cicero/097d5a7db40cbf84a7a03f0e05aaa21c6760b713#defaultPackage.x86_64-linux",
 						"github:nixos/nixpkgs/nixpkgs-unstable#nixUnstable",
 						"github:nixos/nixpkgs/nixpkgs-unstable#bash",
 						"github:nixos/nixpkgs/nixpkgs-unstable#coreutils",
@@ -54,6 +62,7 @@ job: {
 						"github:nixos/nixpkgs/nixpkgs-unstable#git",
 						"github:nixos/nixpkgs/nixpkgs-unstable#cacert",
 						"github:nixos/nixpkgs/nixpkgs-unstable#dbmate",
+						"github:nixos/nixpkgs/nixpkgs-unstable#vault-bin",
 					]
 
 					command: ["/bin/bash", "/local/entrypoint.sh"]
@@ -64,10 +73,9 @@ job: {
 					data: """
 						set -exuo pipefail
 
-						export SSL_CERT_FILE="/current-profile/etc/ssl/certs/ca-bundle.crt"
-						export NIX_CONFIG="
-						experimental-features = nix-command flakes
-						"
+						env
+						NOMAD_TOKEN="$(vault read -field secret_id nomad/creds/cicero)"
+						export NOMAD_TOKEN
 
 						mkdir -p /etc
 						echo 'nixbld:x:30000:nixbld1' > /etc/group
@@ -76,7 +84,6 @@ job: {
 
 						git clone https://github.com/input-output-hk/cicero
 						cd cicero
-						export DATABASE_URL="sqlite:db/database.sqlite3"
 						dbmate up
 
 						exec /bin/cicero all --liftbridge-addr liftbridge.service.consul:9292
