@@ -5,33 +5,43 @@ import (
 )
 
 job: liftbridge: {
-	update: {
-		max_parallel:      1
-		health_check:      "checks"
-		min_healthy_time:  "10s"
-		healthy_deadline:  "5m"
-		progress_deadline: "10m"
-		auto_revert:       true
-		stagger:           "30s"
-	}
-
 	group: {
 		#prototype: {
 			#id:   number
 			#seed: bool
 
+			restart: {
+				attempts: 5
+				delay:    "10s"
+				interval: "1m"
+				mode:     "delay"
+			}
+
+			reschedule: {
+				delay:          "10s"
+				delay_function: "exponential"
+				max_delay:      "1m"
+				unlimited:      true
+			}
+
 			network: {
 				mode: "host"
-				port: nats: static:       "4222"
+				// clients connections
 				port: liftbridge: static: "9292"
+				// clients connections
+				port: nats: static: "4222"
+				// HTTP management port for information reporting and monitoring
+				port: http: static: "8222"
+				// routing port for clustering
+				port: routing: static: "6222"
 			}
 
 			service: [{
 				name:         "liftbridge"
 				address_mode: "host"
-				port:         "nats"
-				task:         "liftbridge"
+				port:         "liftbridge"
 				tags: ["voter-\(#id)"]
+				canary_tags: ["candidate-\(#id)"]
 				check: [{
 					type:     "tcp"
 					port:     "liftbridge"
@@ -42,8 +52,8 @@ job: liftbridge: {
 				name:         "liftbridge-nats"
 				address_mode: "host"
 				port:         "nats"
-				task:         "liftbridge"
 				tags: ["voter-\(#id)"]
+				canary_tags: ["candidate-\(#id)"]
 				check: [{
 					type:     "tcp"
 					port:     "nats"
@@ -56,7 +66,7 @@ job: liftbridge: {
 				driver: "nix"
 
 				resources: {
-					memory: 64
+					memory: 128
 					cpu:    200
 				}
 
@@ -73,8 +83,10 @@ job: liftbridge: {
 						data: dir: "/local/server"
 						activity: stream: enabled: true
 						logging: {
-							level: "debug"
-							raft:  true
+							level:    "debug"
+							raft:     true
+							nats:     true
+							recovery: true
 						}
 						nats: {
 							embedded: true

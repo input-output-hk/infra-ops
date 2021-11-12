@@ -12,6 +12,7 @@
     ipxed.url = "github:input-output-hk/ipxed";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
+    nomad-follower.url = "github:input-output-hk/nomad-follower";
   };
 
   outputs = { self, nixpkgs, utils, bitte, ipxed, ... }@inputs:

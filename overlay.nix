@@ -1,8 +1,9 @@
 inputs: final: prev: {
   inherit (inputs.nixpkgs-unstable.legacyPackages."${prev.system}")
-    hydra-unstable;
+    hydra-unstable vector;
   bitte-ci = inputs.bitte-ci.packages."${prev.system}";
   inherit (inputs.nomad-driver-nix.packages."${prev.system}") nomad-driver-nix;
+  nomad-follower = inputs.nomad-follower.defaultPackage."${prev.system}";
 
   jobs = let
     src =

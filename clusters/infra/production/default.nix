@@ -5,7 +5,7 @@ let
   inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
     securityGroupRules;
 
-  bitte = self.inputs.bitte;
+  inherit (self.inputs) bitte;
 in {
 
   imports = [ ./vault-raft-storage.nix ./secrets.nix ./iam.nix ];
@@ -34,6 +34,15 @@ in {
         capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
       };
     };
+
+    nomad-follower = {
+      description = "Nomad Follower (Collect logs from cicero allocations)";
+      agent.policy = "read";
+      namespace.cicero = {
+        policy = "read";
+        capabilities = [ "read-job" ];
+      };
+    };
   };
 
   services.vault.policies = let
@@ -59,6 +68,8 @@ in {
       "kv/metadata/cicero/*".capabilities = [ r l ];
       "nomad/creds/cicero".capabilities = [ r u ];
     };
+
+    client.path."nomad/creds/nomad-follower".capabilities = [ r u ];
   };
 
   tf.core.configuration = let
@@ -104,7 +115,7 @@ in {
       lib.getAttrs [ "aws" "vault" ] pkgs.terraform-provider-versions;
 
     provider = {
-      aws = [{ region = config.cluster.region; }] ++ (lib.forEach regions
+      aws = [{ inherit (config.cluster) region; }] ++ (lib.forEach regions
         (region: {
           inherit region;
           alias = awsProviderNameFor region;
@@ -190,7 +201,7 @@ in {
       #}
     ] (args:
       let
-        attrs = ({
+        attrs = {
           desiredCapacity = 1;
           instanceType = "m5.8xlarge";
           associatePublicIP = true;
@@ -209,7 +220,7 @@ in {
           securityGroupRules = {
             inherit (securityGroupRules) internet internal ssh;
           };
-        } // args);
+        } // args;
         asgName = "client-${attrs.region}-${
             builtins.replaceStrings [ "." ] [ "-" ] attrs.instanceType
           }";
