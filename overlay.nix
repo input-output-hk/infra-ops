@@ -11,7 +11,7 @@ inputs: final: prev: {
 
     exported = final.runCommand "defs" { buildInputs = [ final.cue ]; } ''
       cd ${src}
-      cue export -e jobs > $out
+      cue export -e jobs -t sha=${inputs.self.rev or "dirty"} > $out
     '';
 
     original = builtins.fromJSON (builtins.readFile exported);

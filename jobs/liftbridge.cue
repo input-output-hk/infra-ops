@@ -5,6 +5,8 @@ import (
 )
 
 job: liftbridge: {
+	#sha:             string
+	#liftbridgeFlake: "github:input-output-hk/cicero/\(#sha)#liftbridge"
 	group: {
 		#prototype: {
 			#id:   number
@@ -62,18 +64,54 @@ job: liftbridge: {
 				}]
 			}]
 
+			if !#seed {
+				task: ready: {
+					driver: "nix"
+
+					lifecycle: {
+						hook:    "prestart"
+						sidecar: false
+					}
+
+					config: {
+						packages: [
+							"github:nixos/nixpkgs/nixos-21.05#bash",
+							"github:nixos/nixpkgs/nixos-21.05#netcat",
+						]
+						command: [
+							"/bin/bash",
+							"-c",
+							"""
+              echo "nameserver 172.17.0.1" > /etc/resolv.conf
+              nc -v -z -w 300 voter-0.liftbridge-nats.service.consul 4222
+              """,
+						]
+					}
+				}
+			}
+
 			task: liftbridge: {
 				driver: "nix"
 
 				resources: {
-					memory: 128
+					memory: 512
 					cpu:    200
 				}
 
-				config: [{
-					packages: ["github:input-output-hk/cicero#liftbridge"]
-					command: ["/bin/liftbridge", "--config", "/local/config.yaml"]
-				}]
+				config: {
+					packages: [
+						#liftbridgeFlake,
+						"github:nixos/nixpkgs/nixos-21.05#bash",
+					]
+					command: [
+						"/bin/bash",
+						"-c",
+						"""
+            echo "nameserver 172.17.0.1" > /etc/resolv.conf
+            exec /bin/liftbridge --config /local/config.yaml
+            """,
+					]
+				}
 
 				template: [{
 					destination: "/local/config.yaml"

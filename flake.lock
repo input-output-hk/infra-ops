@@ -925,11 +925,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1636719630,
-        "narHash": "sha256-Hi1YxoY2BrkYSc1cOXCzEL9CJP2E4y7icO9/eNLNj6E=",
+        "lastModified": 1637071374,
+        "narHash": "sha256-PM76JDyDRcF1hKXeBcxeRfZFIfnLnWPYs/0yQZqIb24=",
         "owner": "input-output-hk",
         "repo": "nomad-follower",
-        "rev": "51feb240fc8c311819be4dc997054267b5c75019",
+        "rev": "766c001447d152972dfd9f38aadd78135ca1575a",
         "type": "github"
       },
       "original": {

@@ -29,7 +29,9 @@ in {
 
     cicero = {
       description = "Cicero (Run Jobs and monitor them)";
-      namespace.cicero = {
+      agent.policy = "read";
+      node.policy = "read";
+      namespace."*" = {
         policy = "read";
         capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
       };

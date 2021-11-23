@@ -16,7 +16,7 @@
     };
 
     bitte-ci = {
-      enable = true;
+      enable = false;
       host = config.cluster.instances.hydra.privateIP;
       postgresUrl = "postgres://bitte_ci@/bitte_ci?host=/run/postgresql";
       publicUrl = "http://ci.${config.cluster.domain}";
@@ -35,10 +35,11 @@
 
     postgresql = {
       enable = true;
-      enableTCPIP = false;
+      enableTCPIP = true;
 
       authentication = ''
         local all all trust
+        host all all 10.0.0.0/8 trust
       '';
 
       initialScript = pkgs.writeText "init.sql" ''
@@ -46,6 +47,11 @@
         CREATE USER bitte_ci;
         GRANT ALL PRIVILEGES ON DATABASE bitte_ci to bitte_ci;
         ALTER USER bitte_ci WITH SUPERUSER;
+
+        CREATE DATABASE cicero;
+        CREATE USER cicero;
+        GRANT ALL PRIVILEGES ON DATABASE cicero to cicero;
+        ALTER USER cicero WITH SUPERUSER;
       '';
     };
   };

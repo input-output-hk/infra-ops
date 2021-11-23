@@ -4,13 +4,15 @@ import (
 	jobDefs "github.com/input-output-hk/infra-ops/pkg/jobs:jobs"
 )
 
-job: jobDefs.job
-
-for jobName, jobValue in job {
-	jobs: "\(jobName)": job: "\(jobName)": jobValue
+#config: {
+	#sha: string @tag(sha)
 }
 
-job: [string]: {
+for jobName, jobValue in #job {
+	jobs: "\(jobName)": job: "\(jobName)": {jobValue, #config}
+}
+
+#job: [string]: {
 	id?:  string
 	type: "batch" | *"service"
 	datacenters: ["eu-central-1", "us-east-2"]
@@ -21,3 +23,5 @@ job: [string]: {
 		}
 	}
 }
+
+#job: jobDefs.job
