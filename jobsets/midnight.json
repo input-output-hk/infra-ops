@@ -1,19 +1,19 @@
 {
-    "enabled": 1,
-    "hidden": false,
-    "description": "Mantis Jobset Generator",
-    "nixexprinput": "declInput",
-    "nixexprpath": "jobsets/mantis.nix",
-    "checkinterval": 30,
-    "schedulingshares": 300,
-    "enableemail": true,
-    "emailoverride": "shay.bergmann@iohk.io",
-    "keepnr": 3,
-    "inputs": {
-        "pullRequests": {
-            "type": "githubpulls",
-            "value": "input-output-hk mantis",
-            "emailresponsible": false
-        }
+  "enabled": 1,
+  "hidden": false,
+  "description": "Mantis Jobset Generator",
+  "nixexprinput": "declInput",
+  "nixexprpath": "jobsets/mantis.nix",
+  "checkinterval": 30,
+  "schedulingshares": 300,
+  "enableemail": true,
+  "emailoverride": "shay.bergmann@iohk.io",
+  "keepnr": 3,
+  "inputs": {
+    "pullRequests": {
+      "type": "githubpulls",
+      "value": "input-output-hk mantis",
+      "emailresponsible": false
     }
+  }
 }
