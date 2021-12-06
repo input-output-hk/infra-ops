@@ -1,8 +1,10 @@
-{ self, lib, pkgs, config, ... }:
+{ self, lib, pkgs, config, terralib, ... }:
 let
   inherit (config) cluster;
-  inherit (pkgs.terralib) var regions awsProviderNameFor;
-  inherit (import ./security-group-rules.nix { inherit config pkgs lib; })
+  inherit (terralib) var regions awsProviderNameFor;
+  inherit (import ./security-group-rules.nix {
+    inherit config pkgs lib terralib;
+  })
     securityGroupRules;
 
   inherit (self.inputs) bitte;
@@ -213,7 +215,7 @@ in {
 
           modules = [
             (bitte + /profiles/client.nix)
-            (bitte + /profiles/zfs-runtime.nix)
+            (bitte + /profiles/zfs-client-options.nix)
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             ./client.nix
@@ -230,8 +232,9 @@ in {
 
     instances = {
       core-1 = {
-        instanceType = "t3a.medium";
+        instanceType = "t3a.xlarge";
         privateIP = "172.16.0.10";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
 
         modules =
@@ -243,8 +246,9 @@ in {
       };
 
       core-2 = {
-        instanceType = "t3a.medium";
+        instanceType = "t3a.xlarge";
         privateIP = "172.16.1.10";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
 
         modules = [ (bitte + /profiles/core.nix) ];
@@ -255,8 +259,9 @@ in {
       };
 
       core-3 = {
-        instanceType = "t3a.medium";
+        instanceType = "t3a.xlarge";
         privateIP = "172.16.2.10";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-3;
 
         modules = [ (bitte + /profiles/core.nix) ];
@@ -269,6 +274,7 @@ in {
       monitoring = {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 100;
         route53.domains =
@@ -291,6 +297,7 @@ in {
       routing = {
         instanceType = "t3a.small";
         privateIP = "172.16.1.40";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
         volumeSize = 100;
         route53.domains = [ "*.${cluster.domain}" ];
@@ -305,8 +312,8 @@ in {
 
       hydra = {
         instanceType = "m5.4xlarge";
-
         privateIP = "172.16.0.52";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 600;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
@@ -321,6 +328,7 @@ in {
       storage-0 = {
         instanceType = "t3a.small";
         privateIP = "172.16.0.30";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
 
@@ -334,6 +342,7 @@ in {
       storage-1 = {
         instanceType = "t3a.small";
         privateIP = "172.16.1.20";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
         volumeSize = 40;
 
@@ -347,6 +356,7 @@ in {
       storage-2 = {
         instanceType = "t3a.small";
         privateIP = "172.16.2.20";
+        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-3;
         volumeSize = 40;
 

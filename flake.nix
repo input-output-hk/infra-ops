@@ -24,25 +24,28 @@
       overlay = import ./overlay.nix inputs;
 
       extraOutputs = let
-        hashiStack = bitte.lib.mkHashiStack {
-          flake = self // {
-            inputs = self.inputs // { inherit (bitte.inputs) terranix; };
+        bitteStack = bitte.lib.mkBitteStack {
+          inherit self inputs;
+          pkgs = import nixpkgs {
+            system = "x86_64-linux";
+            overlays =
+              [ bitte.overlay ipxed.overlay (import ./overlay.nix inputs) ];
           };
+
           domain = "infra.aws.iohkdev.io";
+          clusters = ./clusters;
+          deploySshKey = "./secrets/ssh-infra-production";
+          hydrateModule = _: { };
         };
-      in {
-        inherit self inputs;
-        inherit (hashiStack)
-          clusters nomadJobs nixosConfigurations consulTemplates;
-      };
+      in { inherit self inputs; } // bitteStack;
 
       # simpleFlake ignores devShell if we don't specify this.
       packages = { jobs }@pkgs: pkgs;
 
       hydraJobs = { ipxed }@pkgs: pkgs;
 
-      devShell = { bitteShellCompat, cue }:
-        (bitteShellCompat {
+      devShell = { bitteShell, cue }:
+        bitteShell {
           inherit self;
           cluster = "infra-production";
           namespace = "default";
@@ -50,6 +53,6 @@
           region = "us-west-1";
           domain = "infra.aws.iohkdev.io";
           extraPackages = [ cue ];
-        });
+        };
     };
 }

@@ -1,8 +1,6 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, terralib, ... }:
 let
-  inherit (pkgs.terralib) cidrsOf;
-  inherit (config.cluster.vpc) subnets;
-  vpcs = pkgs.terralib.vpcs config.cluster;
+  vpcs = terralib.asgVpcs config.cluster;
 
   global = [ "0.0.0.0/0" ];
   internal = [ config.cluster.vpc.cidr ] ++ (lib.forEach vpcs (vpc: vpc.cidr));

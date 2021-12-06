@@ -1,7 +1,7 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, terralib, ... }:
 let
   inherit (builtins) foldl';
-  inherit (pkgs.terralib) sops2kms sops2region cidrsOf;
+  inherit (terralib) sops2kms sops2region cidrsOf;
   inherit (lib) splitString forEach unique flatten;
   inherit (config) cluster;
   inherit (cluster) s3Bucket kms;
