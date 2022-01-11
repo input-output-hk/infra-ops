@@ -12,9 +12,7 @@
     vaultAddress = "https://${config.cluster.instances.core-2.privateIP}:8200";
   };
 
-  systemd.services.glusterd.path = with pkgs; [
-    nettools
-  ];
+  systemd.services.glusterd.path = with pkgs; [ nettools ];
 
   boot.kernelModules = [ "xfs" ];
 

@@ -20,75 +20,77 @@
   };
 
   outputs = { self, nixpkgs, utils, bitte, ipxed, ... }@inputs:
+    (let
+      overlays = [ pkgsOverlay auxOverlay bitte.overlay ipxed.overlay ];
 
-    (
-      let
-        overlays = [ pkgsOverlay auxOverlay bitte.overlay ipxed.overlay];
+      pkgsOverlay = final: prev: {
+        inherit (inputs.nixpkgs-unstable.legacyPackages."${prev.system}")
+          hydra-unstable vector;
+        bitte-ci = inputs.bitte-ci.packages."${prev.system}";
+        inherit (inputs.nomad-driver-nix.packages."${prev.system}")
+          nomad-driver-nix;
+        nomad-follower = inputs.nomad-follower.defaultPackage."${prev.system}";
+      };
 
-        pkgsOverlay = final: prev: {
-          inherit (inputs.nixpkgs-unstable.legacyPackages."${prev.system}")
-            hydra-unstable vector;
-          bitte-ci = inputs.bitte-ci.packages."${prev.system}";
-          inherit (inputs.nomad-driver-nix.packages."${prev.system}") nomad-driver-nix;
-          nomad-follower = inputs.nomad-follower.defaultPackage."${prev.system}";
-        };
+      auxOverlay = final: prev: {
+        jobs = let
+          src = inputs.nix-inclusive.lib.inclusive ./. [
+            ./cue.mod
+            ./deploy.cue
+            ./jobs
+          ];
 
-        auxOverlay = final: prev: {
-          jobs = let
-            src =
-              inputs.nix-inclusive.lib.inclusive ./. [ ./cue.mod ./deploy.cue ./jobs ];
+          exported = final.runCommand "defs" { buildInputs = [ final.cue ]; } ''
+            cd ${src}
+            cue export -e jobs -t sha=${inputs.self.rev or "dirty"} > $out
+          '';
 
-            exported = final.runCommand "defs" { buildInputs = [ final.cue ]; } ''
-              cd ${src}
-              cue export -e jobs -t sha=${inputs.self.rev or "dirty"} > $out
+          original = builtins.fromJSON (builtins.readFile exported);
+
+          runner = name: value:
+            let
+              jobFile = builtins.toFile "${name}.json" (builtins.toJSON value);
+            in final.writeShellScriptBin name ''
+              echo "Running job: ${jobFile}"
+              ${final.nomad}/bin/nomad job run ${jobFile}
             '';
+        in prev.lib.mapAttrs runner original;
+      };
 
-            original = builtins.fromJSON (builtins.readFile exported);
-
-            runner = name: value:
-              let jobFile = builtins.toFile "${name}.json" (builtins.toJSON value);
-              in final.writeShellScriptBin name ''
-                echo "Running job: ${jobFile}"
-                ${final.nomad}/bin/nomad job run ${jobFile}
-              '';
-          in prev.lib.mapAttrs runner original;
-        };
-
-        pkgsForSystem = system: import nixpkgs {
+      pkgsForSystem = system:
+        import nixpkgs {
           inherit overlays system;
           config.allowUnfree = true;
         };
 
-        bitteStack = bitte.lib.mkBitteStack {
-          inherit self inputs;
-          pkgs = pkgsForSystem "x86_64-linux";
-          domain = "infra.aws.iohkdev.io";
-          clusters = ./clusters;
-          deploySshKey = "./secrets/ssh-infra-production";
-          hydrateModule = _: { };
-        };
+      bitteStack = bitte.lib.mkBitteStack {
+        inherit self inputs;
+        pkgs = pkgsForSystem "x86_64-linux";
+        domain = "infra.aws.iohkdev.io";
+        clusters = ./clusters;
+        deploySshKey = "./secrets/ssh-infra-production";
+        hydrateModule = _: { };
+      };
 
-      in
-      utils.lib.eachSystem [ "x86_64-linux" ]
-        (system: rec {
+    in utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {
 
-          legacyPackages = pkgsForSystem system;
+      legacyPackages = pkgsForSystem system;
 
-          devShell = legacyPackages.bitteShell rec {
-            inherit self;
-            cluster = "infra-production";
-            namespace = "default";
-            profile = "infra-ops";
-            region = "us-west-1";
-            domain = "infra.aws.iohkdev.io";
-            extraPackages = with legacyPackages; [ cue ];
-          };
+      devShell = legacyPackages.bitteShell rec {
+        inherit self;
+        cluster = "infra-production";
+        namespace = "default";
+        profile = "infra-ops";
+        region = "us-west-1";
+        domain = "infra.aws.iohkdev.io";
+        extraPackages = with legacyPackages; [ cue ];
+      };
 
-        }) // {
-        # eta reduce not possibe since flake check validates for "final" / "prev"
-        overlay = final: prev: nixpkgs.lib.composeManyExtensions overlays final prev;
-      } // bitteStack
-    )
+    }) // {
+      # eta reduce not possibe since flake check validates for "final" / "prev"
+      overlay = final: prev:
+        nixpkgs.lib.composeManyExtensions overlays final prev;
+    } // bitteStack)
 
   ; # outputs
 

@@ -161,10 +161,7 @@ in {
     cicero.description = "Cicero";
   };
 
-  nix.binaryCaches = [
-    "https://hydra.iohk.io"
-    "https://cache.nixos.org"
-  ];
+  nix.binaryCaches = [ "https://hydra.iohk.io" "https://cache.nixos.org" ];
 
   nix.binaryCachePublicKeys = [
     "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
@@ -210,6 +207,7 @@ in {
           maxInstanceLifetime = 0;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
+          ami = "ami-050be818e0266b741";
 
           modules = [
             (bitte + /profiles/client.nix)
@@ -217,6 +215,7 @@ in {
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             ./client.nix
+            ./fix-nvme.nix
           ];
 
           securityGroupRules = {
