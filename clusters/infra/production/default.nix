@@ -10,7 +10,7 @@ let
   inherit (self.inputs) bitte;
 in {
 
-  imports = [ ./vault-raft-storage.nix ./secrets.nix ./iam.nix ];
+  imports = [ ./vault-raft-storage.nix ./secrets.nix ];
 
   services.consul.policies.developer.servicePrefix."infra-" = {
     policy = "write";
@@ -18,8 +18,16 @@ in {
   };
 
   services.nomad.policies = {
-    admin.namespace."infra-*".policy = "write";
-    developer.namespace."infra-*".policy = "write";
+    admin = {
+      description = "Admin policies";
+      namespace."infra-*".policy = "write";
+    };
+
+    developer = {
+      description = "Dev policies";
+      namespace."infra-*".policy = "write";
+    };
+
     bitte-ci = {
       description = "Bitte CI (Run Jobs and monitor them)";
       namespace.default = {
@@ -207,15 +215,13 @@ in {
           maxInstanceLifetime = 0;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
-          ami = "ami-050be818e0266b741";
+          node_class = "production";
 
           modules = [
-            (bitte + /profiles/client.nix)
-            (bitte + /profiles/zfs-client-options.nix)
+            bitte.profiles.client
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
             ./client.nix
-            ./fix-nvme.nix
           ];
 
           securityGroupRules = {
@@ -227,15 +233,14 @@ in {
           }";
       in lib.nameValuePair asgName attrs));
 
-    instances = {
+    coreNodes = {
       core-1 = {
         instanceType = "t3a.xlarge";
         privateIP = "172.16.0.10";
         ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
 
-        modules =
-          [ (bitte + /profiles/core.nix) (bitte + /profiles/bootstrapper.nix) ];
+        modules = [ bitte.profiles.core bitte.profiles.bootstrapper ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -248,7 +253,7 @@ in {
         ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
 
-        modules = [ (bitte + /profiles/core.nix) ];
+        modules = [ bitte.profiles.core ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -261,7 +266,7 @@ in {
         ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-3;
 
-        modules = [ (bitte + /profiles/core.nix) ];
+        modules = [ bitte.profiles.core ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -278,11 +283,10 @@ in {
           [ "docker.${cluster.domain}" "vbk.${cluster.domain}" ];
 
         modules = [
-          (bitte + /profiles/monitoring.nix)
+          bitte.profiles.monitoring
           ./vault-backend.nix
-          ./ipxe.nix
-          ./nfs.nix
-          ./letsencrypt.nix
+          # ./ipxe.nix
+          # ./nfs.nix
         ];
 
         securityGroupRules = {
@@ -299,8 +303,7 @@ in {
         volumeSize = 100;
         route53.domains = [ "*.${cluster.domain}" ];
 
-        modules =
-          [ (bitte + /profiles/routing.nix) ./traefik.nix ./letsencrypt.nix ];
+        modules = [ bitte.profiles.routing ./traefik.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh http routing;
@@ -315,7 +318,7 @@ in {
         volumeSize = 600;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
-        modules = [ (bitte + /profiles/common.nix) ./bitte-ci.nix ];
+        modules = [ bitte.profiles.common ./bitte-ci.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh wireguard;

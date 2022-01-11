@@ -1,5 +1,5 @@
 { self, lib, pkgs, config, ... }:
-let domain = config.cluster.domain;
+let inherit (config.cluster) domain;
 in {
   services.consul.ui = true;
 
@@ -144,13 +144,13 @@ in {
 
           hydra.loadBalancer = {
             servers = [{
-              url = "http://${config.cluster.instances.hydra.privateIP}:3001";
+              url = "http://${config.cluster.coreNodes.hydra.privateIP}:3001";
             }];
           };
 
           bitte-ci.loadBalancer = {
             servers = [{
-              url = "http://${config.cluster.instances.hydra.privateIP}:9494";
+              url = "http://${config.cluster.coreNodes.hydra.privateIP}:9494";
             }];
           };
         };

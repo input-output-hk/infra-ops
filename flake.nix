@@ -88,8 +88,7 @@
 
     }) // {
       # eta reduce not possibe since flake check validates for "final" / "prev"
-      overlay = final: prev:
-        nixpkgs.lib.composeManyExtensions overlays final prev;
+      overlay = nixpkgs.lib.composeManyExtensions overlays;
     } // bitteStack)
 
   ; # outputs

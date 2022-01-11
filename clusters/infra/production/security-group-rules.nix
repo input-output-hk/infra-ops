@@ -1,6 +1,6 @@
 { pkgs, lib, config, terralib, ... }:
 let
-  vpcs = terralib.asgVpcs config.cluster;
+  vpcs = terralib.aws.asgVpcs config.cluster;
 
   global = [ "0.0.0.0/0" ];
   internal = [ config.cluster.vpc.cidr ] ++ (lib.forEach vpcs (vpc: vpc.cidr));
