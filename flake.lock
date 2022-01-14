@@ -1220,11 +1220,11 @@
         "utils": "utils_10"
       },
       "locked": {
-        "lastModified": 1637071374,
-        "narHash": "sha256-PM76JDyDRcF1hKXeBcxeRfZFIfnLnWPYs/0yQZqIb24=",
+        "lastModified": 1642008295,
+        "narHash": "sha256-yx3lLN/hlvEeKItHJ5jH0KSm84IruTWMo78IItVPji4=",
         "owner": "input-output-hk",
         "repo": "nomad-follower",
-        "rev": "766c001447d152972dfd9f38aadd78135ca1575a",
+        "rev": "b1b0b00e940026f72d16bdf13e36ad20f1826e8a",
         "type": "github"
       },
       "original": {
