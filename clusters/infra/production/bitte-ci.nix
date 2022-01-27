@@ -7,6 +7,7 @@
     ingress.enable = lib.mkForce false;
 
     vault-agent.enable = true;
+    vault-agent.role = "core";
     vault-agent.templates."/run/keys/bitte-ci.nomad" = {
       contents = ''
         {{- with secret "nomad/creds/bitte-ci" }}{{ .Data.secret_id }}{{ end -}}

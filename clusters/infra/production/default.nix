@@ -12,6 +12,9 @@ in {
 
   imports = [ ./vault-raft-storage.nix ./secrets.nix ];
 
+  # avoid CVE-2021-4034 (PwnKit)
+  security.polkit.enable = false;
+
   services.consul.policies.developer.servicePrefix."infra-" = {
     policy = "write";
     intentions = "write";
