@@ -30,6 +30,8 @@
         inherit (inputs.nomad-driver-nix.packages."${prev.system}")
           nomad-driver-nix;
         nomad-follower = inputs.nomad-follower.defaultPackage."${prev.system}";
+        inherit (inputs.nixpkgs-unstable.legacyPackages."${prev.system}")
+          traefik;
       };
 
       auxOverlay = final: prev: {
@@ -69,7 +71,84 @@
         domain = "infra.aws.iohkdev.io";
         clusters = ./clusters;
         deploySshKey = "./secrets/ssh-infra-production";
-        hydrateModule = _: { };
+        hydrateModule = _: {
+          tf.hydrate-cluster.configuration.locals.policies = {
+            consul.developer.servicePrefix."infra-" = {
+              policy = "write";
+              intentions = "write";
+            };
+
+            vault = let
+              c = "create";
+              r = "read";
+              u = "update";
+              d = "delete";
+              l = "list";
+            in {
+              admin.path."secret/*".capabilities = [ c r u d l ];
+              terraform.path."secret/data/vbk/*".capabilities = [ c r u d l ];
+              terraform.path."secret/metadata/vbk/*".capabilities = [ d ];
+              vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
+                [ c r u d l ];
+              vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
+                [ c r u d l ];
+
+              cicero.path = {
+                "auth/token/lookup".capabilities = [ u ];
+                "auth/token/lookup-self".capabilities = [ r ];
+                "auth/token/renew-self".capabilities = [ u ];
+                "kv/data/cicero/*".capabilities = [ r l ];
+                "kv/metadata/cicero/*".capabilities = [ r l ];
+                "nomad/creds/cicero".capabilities = [ r u ];
+              };
+
+              client.path."nomad/creds/nomad-follower".capabilities = [ r u ];
+            };
+
+            nomad = {
+              admin = {
+                description = "Admin policies";
+                namespace."infra-*".policy = "write";
+              };
+
+              developer = {
+                description = "Dev policies";
+                namespace."infra-*".policy = "write";
+              };
+
+              bitte-ci = {
+                description = "Bitte CI (Run Jobs and monitor them)";
+                namespace.default = {
+                  policy = "read";
+                  capabilities =
+                    [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+                };
+                node.policy = "read";
+              };
+
+              cicero = {
+                description = "Cicero (Run Jobs and monitor them)";
+                agent.policy = "read";
+                node.policy = "read";
+                namespace."*" = {
+                  policy = "read";
+                  capabilities =
+                    [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+                };
+              };
+
+              nomad-follower = {
+                description =
+                  "Nomad Follower (Collect logs from cicero allocations)";
+                agent.policy = "read";
+                namespace.cicero = {
+                  policy = "read";
+                  capabilities = [ "read-job" ];
+                };
+              };
+            };
+          };
+        };
       };
 
     in utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {

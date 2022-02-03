@@ -10,82 +10,10 @@ let
   inherit (self.inputs) bitte;
 in {
 
-  imports = [ ./vault-raft-storage.nix ./secrets.nix ];
+  imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ];
 
   # avoid CVE-2021-4034 (PwnKit)
   security.polkit.enable = false;
-
-  services.consul.policies.developer.servicePrefix."infra-" = {
-    policy = "write";
-    intentions = "write";
-  };
-
-  services.nomad.policies = {
-    admin = {
-      description = "Admin policies";
-      namespace."infra-*".policy = "write";
-    };
-
-    developer = {
-      description = "Dev policies";
-      namespace."infra-*".policy = "write";
-    };
-
-    bitte-ci = {
-      description = "Bitte CI (Run Jobs and monitor them)";
-      namespace.default = {
-        policy = "read";
-        capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
-      };
-      node.policy = "read";
-    };
-
-    cicero = {
-      description = "Cicero (Run Jobs and monitor them)";
-      agent.policy = "read";
-      node.policy = "read";
-      namespace."*" = {
-        policy = "read";
-        capabilities = [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
-      };
-    };
-
-    nomad-follower = {
-      description = "Nomad Follower (Collect logs from cicero allocations)";
-      agent.policy = "read";
-      namespace.cicero = {
-        policy = "read";
-        capabilities = [ "read-job" ];
-      };
-    };
-  };
-
-  services.vault.policies = let
-    c = "create";
-    r = "read";
-    u = "update";
-    d = "delete";
-    l = "list";
-  in {
-    admin.path."secret/*".capabilities = [ c r u d l ];
-    terraform.path."secret/data/vbk/*".capabilities = [ c r u d l ];
-    terraform.path."secret/metadata/vbk/*".capabilities = [ d ];
-    vit-terraform.path."secret/data/vbk/vit-testnet/*".capabilities =
-      [ c r u d l ];
-    vit-terraform.path."secret/metadata/vbk/vit-testnet/*".capabilities =
-      [ c r u d l ];
-
-    cicero.path = {
-      "auth/token/lookup".capabilities = [ u ];
-      "auth/token/lookup-self".capabilities = [ r ];
-      "auth/token/renew-self".capabilities = [ u ];
-      "kv/data/cicero/*".capabilities = [ r l ];
-      "kv/metadata/cicero/*".capabilities = [ r l ];
-      "nomad/creds/cicero".capabilities = [ r u ];
-    };
-
-    client.path."nomad/creds/nomad-follower".capabilities = [ r u ];
-  };
 
   tf.core.configuration = let
     mkStorage = name: {
@@ -170,6 +98,7 @@ in {
   services.nomad.namespaces = {
     infra-default.description = "Infra Default";
     cicero.description = "Cicero";
+    midnight-ng.description = "Midnight NG";
   };
 
   nix.binaryCaches = [ "https://hydra.iohk.io" "https://cache.nixos.org" ];
@@ -243,7 +172,8 @@ in {
         ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
 
-        modules = [ bitte.profiles.core bitte.profiles.bootstrapper ];
+        modules =
+          [ bitte.profiles.core bitte.profiles.bootstrapper ./secrets.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh;
@@ -282,8 +212,6 @@ in {
         ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 100;
-        route53.domains =
-          [ "docker.${cluster.domain}" "vbk.${cluster.domain}" ];
 
         modules = [
           bitte.profiles.monitoring
@@ -335,7 +263,8 @@ in {
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules =
+          [ (bitte + /profiles/glusterfs/storage.nix) ./nix-cache-proxy.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
