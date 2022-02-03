@@ -17,11 +17,18 @@
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
     nomad-follower.url = "github:input-output-hk/nomad-follower";
+    nix-cache-proxy.url = "github:input-output-hk/nix-cache-proxy";
   };
 
-  outputs = { self, nixpkgs, utils, bitte, ipxed, ... }@inputs:
+  outputs = { self, nixpkgs, utils, bitte, ipxed, nix-cache-proxy, ... }@inputs:
     (let
-      overlays = [ pkgsOverlay auxOverlay bitte.overlay ipxed.overlay ];
+      overlays = [
+        pkgsOverlay
+        auxOverlay
+        bitte.overlay
+        ipxed.overlay
+        nix-cache-proxy.overlay
+      ];
 
       pkgsOverlay = final: prev: {
         inherit (inputs.nixpkgs-unstable.legacyPackages."${prev.system}")
