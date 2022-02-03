@@ -1269,11 +1269,11 @@
         "utils": "utils_10"
       },
       "locked": {
-        "lastModified": 1643891015,
-        "narHash": "sha256-un/bt2kKe1wXRbQv7QpXd9BfzWhRXWdnjz/JiSMP7ys=",
+        "lastModified": 1643902527,
+        "narHash": "sha256-dcAqvxVEgxIdJHqsW2xR20b4JRbEnqF3kwbmlBOLwG8=",
         "owner": "input-output-hk",
         "repo": "nomad-driver-nix",
-        "rev": "3abe6350efbc437162d13b940c3ee8f6c60a6912",
+        "rev": "ae7bdb3a26d7d632cfbb136419136a403e92cee0",
         "type": "github"
       },
       "original": {
