@@ -118,9 +118,33 @@ in {
             service = "api@internal";
             tls = true;
           };
+
+          vault-backend = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`vbk.${domain}`) && PathPrefix(`/`)";
+            service = "vault-backend";
+            tls = true;
+          };
+
+          docker-registry = {
+            entrypoints = "https";
+            middlewares = [ ];
+            rule = "Host(`docker.${domain}`) && PathPrefix(`/`)";
+            service = "docker-registry";
+            tls = true;
+          };
         };
 
         services = {
+          docker-registry.loadBalancer = {
+            servers = [{ url = "http://monitoring:5000"; }];
+          };
+
+          vault-backend.loadBalancer = {
+            servers = [{ url = "http://monitoring:8080"; }];
+          };
+
           oauth-backend.loadBalancer = {
             servers = [{ url = "http://127.0.0.1:4180"; }];
           };
@@ -215,26 +239,34 @@ in {
     '';
   };
 
-  services.oauth2_proxy.provider = lib.mkForce "github";
-  services.oauth2_proxy.keyFile = lib.mkForce "/run/keys/github-oauth-secrets";
   services.oauth2_proxy.extraConfig.skip-provider-button = "true";
   services.oauth2_proxy.extraConfig.upstream = "static://202";
-  services.oauth2_proxy.extraConfig.github-user =
-    builtins.concatStringsSep "," [ "manveru" "dermetfan" "biandratti" ];
-  services.oauth2_proxy.extraConfig.github-org = "input-output-hk";
-  services.oauth2_proxy.email.domains = lib.mkForce [ "*" ];
-  services.oauth2_proxy.scope =
-    builtins.concatStringsSep "," [ "user:email" "read:public_key" "read:org" ];
-  # services.oauth2_proxy.extraConfig.set-authorization-header=true;
-  services.oauth2_proxy.extraConfig.pass-access-token = true;
 
-  secrets.install.github-oauth.script = ''
-    export PATH="${lib.makeBinPath (with pkgs; [ sops coreutils ])}"
-    dest=/run/keys/github-oauth-secrets
-    sops -d ${config.secrets.encryptedRoot + /github-oauth-secrets} > "$dest"
-    chown root:keys "$dest"
-    chmod g+r "$dest"
-  '';
+  /* services.oauth2_proxy.provider = lib.mkForce "github";
+     services.oauth2_proxy.keyFile = lib.mkForce "/run/keys/github-oauth-secrets";
+     services.oauth2_proxy.extraConfig.skip-provider-button = "true";
+     services.oauth2_proxy.extraConfig.upstream = "static://202";
+     services.oauth2_proxy.extraConfig.github-user =
+       builtins.concatStringsSep "," [ "manveru" "dermetfan" "biandratti" ];
+     services.oauth2_proxy.extraConfig.github-org = "input-output-hk";
+     services.oauth2_proxy.email.domains = lib.mkForce [ "*" ];
+     services.oauth2_proxy.scope = builtins.concatStringsSep "," [
+       "user:email"
+       "read:public_key"
+       "read:org"
+       "repo"
+     ];
+     # services.oauth2_proxy.extraConfig.set-authorization-header=true;
+     services.oauth2_proxy.extraConfig.pass-access-token = true;
+
+     secrets.install.github-oauth.script = ''
+       export PATH="${lib.makeBinPath (with pkgs; [ sops coreutils ])}"
+       dest=/run/keys/github-oauth-secrets
+       sops -d ${config.secrets.encryptedRoot + /github-oauth-secrets} > "$dest"
+       chown root:keys "$dest"
+       chmod g+r "$dest"
+     '';
+  */
 
   systemd.services.oauth2_proxy.serviceConfig.RestartSec = "5s";
 }
