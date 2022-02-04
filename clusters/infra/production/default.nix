@@ -164,7 +164,8 @@ in {
     s3Bucket = "iohk-infra";
     terraformOrganization = "iohk-infra";
 
-    s3CachePubKey = lib.fileContents ../../../encrypted/nix-public-key-file;
+    s3CachePubKey =
+      "infra-production-0:T7ZxFWDaNjyEiiYDe6uZn0eq+77gORGkdec+kYwaB1M=";
     adminNames = [ "craige.mcwhirter" "john.lotoski" "michael.fellinger" ];
 
     flakePath = ../../..;

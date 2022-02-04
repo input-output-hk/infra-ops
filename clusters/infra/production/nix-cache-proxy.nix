@@ -2,7 +2,7 @@
 let
   secret-key = "/etc/nix/secret-key";
   public-key =
-    builtins.readFile (config.secrets.encryptedRoot + "/nix-public-key-file");
+    lib.fileContents (config.secrets.encryptedRoot + "/nix-public-key-file");
 in {
   imports = [ inputs.nix-cache-proxy.nixosModules.nix-cache-proxy ];
 
