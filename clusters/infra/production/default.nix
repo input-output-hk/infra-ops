@@ -217,7 +217,6 @@ in {
           bitte.profiles.monitoring
           ./vault-backend.nix
           # ./ipxe.nix
-          # ./nfs.nix
         ];
 
         securityGroupRules = {
