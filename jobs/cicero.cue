@@ -6,7 +6,6 @@ job: cicero: {
 	#ciceroFlake:    "github:input-output-hk/cicero/\(#sha)#cicero-entrypoint"
 	#nomadAddr:      "https://nomad.infra.aws.iohkdev.io"
 	#vaultAddr:      "https://vault.infra.aws.iohkdev.io"
-	#liftbridgeAddr: "liftbridge.service.consul:9292"
 
 	group: {
 		cicero: {
@@ -73,7 +72,6 @@ job: cicero: {
 					packages: [#ciceroFlake]
 					command: [
 						"/bin/entrypoint",
-						"--liftbridge-addr", #liftbridgeAddr,
 						"--listen", ":8888",
 					]
 				}]
