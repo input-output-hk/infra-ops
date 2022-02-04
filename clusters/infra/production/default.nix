@@ -9,39 +9,85 @@ let
 
   inherit (self.inputs) bitte;
 in {
-
   imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ];
 
   # avoid CVE-2021-4034 (PwnKit)
   security.polkit.enable = false;
 
+  # Growing a gluster (growing bricks):
+  #
+  # GlusterFS doesn't support growing bricks directly, so they have to be
+  # replaced with bigger ones.
+  #
+  # We really would like to reuse the original EBS volumes, so we first grow
+  # those, add 3 identical new volumes, and then replace the old bricks with
+  # bricks on the new volumes. After this is done, we can replace them back and
+  # remove the temporary EBS volumes.
+  #
+  # Create and attach new EBS volume
+  # Format and mount it:
+  #   {
+  #     fileSystems."/data/brick2" = {
+  #       label = "brick";
+  #       device = "/dev/nvme2n1";
+  #       fsType = "xfs";
+  #       formatOptions = "-i size=512";
+  #       autoFormat = true;
+  #     };
+  #   }
+  #
+  # Grow the original EBS volume:
+  # $ xfs_growfs /dev/nvme1n1
+  #
+  # Migrate data over to the new volume:
+  # $ gluster volume replace-brick gv0 storage-0:/data/brick1/gv0 storage-0:/data/brick2/gv0 commit force
+  #
+  # Check health of the the cluster
+  # $ gluster volume heal gv0 info
+  # Number of entries that heal returns should be 0
+  #
+  # Replace the temporary brick with the original EBS volume:
+  # $ gluster volume replace-brick gv0 storage-0:/data/brick2/gv0 storage-0:/data/brick1/gv0 commit force
+  # $ gluster volume heal gv0 info
+  #
+  # Remove the brick2 mountpoints again.
+  # Then finally remove the temporary EBS volumes.
+
   tf.core.configuration = let
-    mkStorage = name: {
-      availability_zone = var "aws_instance.${name}.availability_zone";
+    mkStorage = host: {
+      availability_zone = var "aws_instance.${host}.availability_zone";
       encrypted = true;
       iops = 3000; # 3000..16000
-      size = 2; # GiB
+      size = 500; # GiB
       type = "gp3";
       kms_key_id = cluster.kms;
       throughput = 125; # 125..1000 MiB/s
     };
 
-    mkAttachment = name: {
-      device_name = "/dev/sdh";
-      volume_id = var "aws_ebs_volume.${name}.id";
-      instance_id = var "aws_instance.${name}.id";
+    mkAttachment = host: volume: device_name: {
+      inherit device_name;
+      volume_id = var "aws_ebs_volume.${volume}.id";
+      instance_id = var "aws_instance.${host}.id";
     };
   in {
     resource.aws_volume_attachment = {
-      storage-0 = mkAttachment "storage-0";
-      storage-1 = mkAttachment "storage-1";
-      storage-2 = mkAttachment "storage-2";
+      storage-0 = mkAttachment "storage-0" "storage-0" "/dev/sdh";
+      storage-1 = mkAttachment "storage-1" "storage-1" "/dev/sdh";
+      storage-2 = mkAttachment "storage-2" "storage-2" "/dev/sdh";
+      # use this for growing the storage:
+      # storage-0-tmp = mkAttachment "storage-0" "storage-0-tmp" "/dev/sdi";
+      # storage-1-tmp = mkAttachment "storage-1" "storage-1-tmp" "/dev/sdi";
+      # storage-2-tmp = mkAttachment "storage-2" "storage-2-tmp" "/dev/sdi";
     };
 
     resource.aws_ebs_volume = {
       storage-0 = mkStorage "storage-0";
       storage-1 = mkStorage "storage-1";
       storage-2 = mkStorage "storage-2";
+      # use this for growing the storage:
+      # storage-0-tmp = mkStorage "storage-0";
+      # storage-1-tmp = mkStorage "storage-1";
+      # storage-2-tmp = mkStorage "storage-2";
     };
   };
 
