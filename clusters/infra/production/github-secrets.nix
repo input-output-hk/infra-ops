@@ -25,6 +25,16 @@ in {
     '';
   };
 
+  secrets.install.github-var-lib-nomad = {
+    inputType = "json";
+    outputType = "binary";
+    source = config.secrets.encryptedRoot + "/netrc";
+    target = "/var/lib/nomad/.netrc";
+    script = ''
+      chmod 0600 /var/lib/nomad/.netrc
+    '';
+  };
+
   secrets.install.github-ssh = rec {
     inputType = "json";
     outputType = "binary";
