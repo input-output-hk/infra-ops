@@ -170,6 +170,8 @@ in {
 
     flakePath = ../../..;
 
+    builder = "hydra";
+
     autoscalingGroups = lib.listToAttrs (lib.forEach [
       # NOTE: Regions with < 3 AZs not yet supported
       {

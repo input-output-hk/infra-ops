@@ -160,16 +160,16 @@
         "vulnix": "vulnix"
       },
       "locked": {
-        "lastModified": 1644502924,
-        "narHash": "sha256-8WA54/XnS+LGT+5Zul26vmdUOuE+JvCSb2JuO+PKFp0=",
+        "lastModified": 1644504671,
+        "narHash": "sha256-VQm1rzk2HG59Bvt3AdrVJWT9G1M0zcu1HkOKtDM5d7Q=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "8f288eddb6e9c229f76965d1291077c84d5e2e46",
+        "rev": "95085bb8d13d1c0bae7097f4b380637392033ea5",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "hydra-server",
+        "ref": "remote-builder",
         "repo": "bitte",
         "type": "github"
       }
