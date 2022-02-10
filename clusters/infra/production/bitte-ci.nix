@@ -2,38 +2,6 @@
   imports = [ (self.inputs.bitte-ci + /modules/bitte-ci.nix) ];
 
   services = {
-    # TODO: move this to appropriate location
-    ingress-config.enable = lib.mkForce false;
-    ingress.enable = lib.mkForce false;
-
-    vault-agent.enable = true;
-    vault-agent.role = "core";
-    vault-agent.templates."/run/keys/bitte-ci.nomad" = {
-      contents = ''
-        {{- with secret "nomad/creds/bitte-ci" }}{{ .Data.secret_id }}{{ end -}}
-      '';
-      command =
-        "${pkgs.systemd}/bin/systemctl restart bitte-ci-server bitte-ci-listener";
-    };
-
-    bitte-ci = {
-      enable = false;
-      host = config.cluster.coreNodes.hydra.privateIP;
-      postgresUrl = "postgres://bitte_ci@/bitte_ci?host=/run/postgresql";
-      publicUrl = "http://ci.${config.cluster.domain}";
-      lokiUrl = "http://${config.cluster.coreNodes.monitoring.privateIP}:3100";
-      githubUser = "iohk-devops";
-      githubTokenFile = "/run/keys/bitte-ci.token";
-      nomadTokenFile = "/run/keys/bitte-ci.nomad";
-      artifactSecretFile = "/run/keys/bitte-ci.artifact";
-      githubHookSecretFile = "/run/keys/bitte-ci.secret";
-      nomadUrl = "https://nomad.${config.cluster.domain}";
-      nomadSslCa = "/etc/ssl/certs/ca.pem";
-      nomadSslKey = "/etc/ssl/certs/cert-key.pem";
-      nomadSslCert = "/etc/ssl/certs/cert.pem";
-      nomadDatacenters = [ "eu-central-1" "us-east-2" ];
-    };
-
     postgresql = {
       enable = true;
       enableTCPIP = true;

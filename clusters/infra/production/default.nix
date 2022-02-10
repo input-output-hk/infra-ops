@@ -295,7 +295,7 @@ in {
         volumeSize = 600;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
-        modules = [ bitte.profiles.common ./bitte-ci.nix ];
+        modules = [ ./bitte-ci.nix bitte.profiles.hydra ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh wireguard;
