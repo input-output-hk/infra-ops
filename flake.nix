@@ -5,7 +5,7 @@
     utils.url = "github:numtide/flake-utils";
 
     # --- Bitte Stack ----------------------------------------------
-    bitte.url = "github:input-output-hk/bitte/routing-tokens";
+    bitte.url = "github:input-output-hk/bitte/nix";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     # --------------------------------------------------------------

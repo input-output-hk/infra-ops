@@ -144,18 +144,12 @@
         "deploy": "deploy",
         "fenix": "fenix",
         "hydra": "hydra",
-        "nix": [
-          "bitte",
-          "nix-core"
-        ],
-        "nix-auxiliary": "nix-auxiliary",
-        "nix-core": "nix-core",
+        "nix": "nix",
         "nixpkgs": [
           "bitte",
           "nixpkgs-core"
         ],
         "nixpkgs-auxiliary": "nixpkgs-auxiliary",
-        "nixpkgs-client": "nixpkgs-client",
         "nixpkgs-core": "nixpkgs-core",
         "nomad": "nomad",
         "ops-lib": "ops-lib",
@@ -166,16 +160,16 @@
         "vulnix": "vulnix"
       },
       "locked": {
-        "lastModified": 1643993340,
-        "narHash": "sha256-ZACrg2RRZCQwflfHaocM1WAQvpum9LgvIbDns8mOrTI=",
+        "lastModified": 1644492900,
+        "narHash": "sha256-17M3PRJtjAvrsJjNN+EOD6p4i1QH56P+bQ47dS28GG8=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "a547b7f2751f3ecb85fdcf865c9f384e301b14b6",
+        "rev": "d227b3eb37282a7d83b4b44d04db5b0d0ef273e6",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "routing-tokens",
+        "ref": "nix",
         "repo": "bitte",
         "type": "github"
       }
@@ -192,7 +186,7 @@
         "inclusive": "inclusive_2",
         "iogo": "iogo_2",
         "libatomic_ops": "libatomic_ops",
-        "nix": "nix",
+        "nix": "nix_2",
         "nixpkgs": "nixpkgs_9",
         "nomad-src": "nomad-src"
       },
@@ -235,7 +229,7 @@
         "iogo": "iogo",
         "nix": [
           "bitte",
-          "nix-auxiliary"
+          "nix"
         ],
         "nixpkgs": [
           "bitte",
@@ -879,22 +873,6 @@
     "lowdown-src_2": {
       "flake": false,
       "locked": {
-        "lastModified": 1637360308,
-        "narHash": "sha256-MKjLTWpugcuwRppyOK7LwFo6saWYSJ1ODXfDGKc9API=",
-        "owner": "kristapsdz",
-        "repo": "lowdown",
-        "rev": "1de10c1d71bfb4348ae0beaec8b1547d5e114969",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kristapsdz",
-        "repo": "lowdown",
-        "type": "github"
-      }
-    },
-    "lowdown-src_3": {
-      "flake": false,
-      "locked": {
         "lastModified": 1617481909,
         "narHash": "sha256-SqnfOFuLuVRRNeVJr1yeEPJue/qWoCp5N6o5Kr///p4=",
         "owner": "kristapsdz",
@@ -911,43 +889,25 @@
     },
     "nix": {
       "inputs": {
-        "lowdown-src": "lowdown-src_3",
-        "nixpkgs": "nixpkgs_8"
-      },
-      "locked": {
-        "lastModified": 1627913633,
-        "narHash": "sha256-vwj1fAGn3Pl9Vr/qSL+oDxuwbRzEdI3dsEg6o3xTmWg=",
-        "owner": "NixOS",
-        "repo": "nix",
-        "rev": "47e96bb533f8cacc171bec9b688b134de31a48a9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nix",
-        "type": "github"
-      }
-    },
-    "nix-auxiliary": {
-      "inputs": {
         "lowdown-src": "lowdown-src",
         "nixpkgs": [
           "bitte",
-          "nixpkgs-auxiliary"
-        ]
+          "nixpkgs-core"
+        ],
+        "nixpkgs-regression": "nixpkgs-regression"
       },
       "locked": {
-        "lastModified": 1638794019,
-        "narHash": "sha256-zdMODMLdJ0smEEzNMOoIzBxt9QWVzgMvr+pwxkhtD4g=",
-        "owner": "NixOS",
+        "lastModified": 1644413094,
+        "narHash": "sha256-KLGaeSqvhuUFz6DxrB9r3w+lfp9bXIiCT9K1cqg7Ze8=",
+        "owner": "nixos",
         "repo": "nix",
-        "rev": "d1aaa7ef71713b6693ad3ddf8704ce62bab82095",
+        "rev": "52f52319ad21bdbd7a33bb85eccc83756648f110",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "owner": "nixos",
         "repo": "nix",
-        "rev": "d1aaa7ef71713b6693ad3ddf8704ce62bab82095",
+        "rev": "52f52319ad21bdbd7a33bb85eccc83756648f110",
         "type": "github"
       }
     },
@@ -972,29 +932,6 @@
         "type": "github"
       }
     },
-    "nix-core": {
-      "inputs": {
-        "lowdown-src": "lowdown-src_2",
-        "nixpkgs": [
-          "bitte",
-          "nixpkgs-core"
-        ]
-      },
-      "locked": {
-        "lastModified": 1638794019,
-        "narHash": "sha256-zdMODMLdJ0smEEzNMOoIzBxt9QWVzgMvr+pwxkhtD4g=",
-        "owner": "NixOS",
-        "repo": "nix",
-        "rev": "d1aaa7ef71713b6693ad3ddf8704ce62bab82095",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nix",
-        "rev": "d1aaa7ef71713b6693ad3ddf8704ce62bab82095",
-        "type": "github"
-      }
-    },
     "nix-inclusive": {
       "inputs": {
         "stdlib": "stdlib_6"
@@ -1010,6 +947,25 @@
       "original": {
         "owner": "input-output-hk",
         "repo": "nix-inclusive",
+        "type": "github"
+      }
+    },
+    "nix_2": {
+      "inputs": {
+        "lowdown-src": "lowdown-src_2",
+        "nixpkgs": "nixpkgs_8"
+      },
+      "locked": {
+        "lastModified": 1627913633,
+        "narHash": "sha256-vwj1fAGn3Pl9Vr/qSL+oDxuwbRzEdI3dsEg6o3xTmWg=",
+        "owner": "NixOS",
+        "repo": "nix",
+        "rev": "47e96bb533f8cacc171bec9b688b134de31a48a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nix",
         "type": "github"
       }
     },
@@ -1045,7 +1001,7 @@
         "type": "github"
       }
     },
-    "nixpkgs-client": {
+    "nixpkgs-core": {
       "locked": {
         "lastModified": 1638452135,
         "narHash": "sha256-5Il6hgrTgcWIsB7zug0yDFccYXx7pJCw8cwJdXMuLfM=",
@@ -1061,20 +1017,19 @@
         "type": "github"
       }
     },
-    "nixpkgs-core": {
+    "nixpkgs-regression": {
       "locked": {
-        "lastModified": 1638452135,
-        "narHash": "sha256-5Il6hgrTgcWIsB7zug0yDFccYXx7pJCw8cwJdXMuLfM=",
-        "owner": "nixos",
+        "lastModified": 1643052045,
+        "narHash": "sha256-uGJ0VXIhWKGXxkeNnq4TvV3CIOkUJ3PAoLZ3HMzNVMw=",
+        "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "43cdc5b364511eabdcad9fde639777ffd9e5bab1",
+        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "release-21.05",
-        "repo": "nixpkgs",
-        "type": "github"
+        "id": "nixpkgs",
+        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
+        "type": "indirect"
       }
     },
     "nixpkgs-unstable": {
@@ -1299,7 +1254,7 @@
       "inputs": {
         "nix": [
           "bitte",
-          "nix-core"
+          "nix"
         ],
         "nixpkgs": [
           "bitte",
