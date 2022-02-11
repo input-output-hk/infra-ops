@@ -1,4 +1,7 @@
 { pkgs, lib, self, ... }: {
+  profiles.auxiliaries.builder.asgRemoteBuilder.buildMachine.supportedFeatures =
+    [ "big-parallel" ];
+
   services.nomad.client.chroot_env =
     lib.mkForce { "/etc/passwd" = "/etc/passwd"; };
 

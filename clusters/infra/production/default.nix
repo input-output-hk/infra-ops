@@ -297,7 +297,11 @@ in {
         volumeSize = 600;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
-        modules = [ ./bitte-ci.nix bitte.profiles.hydra ];
+        modules = [
+          ./bitte-ci.nix
+          bitte.profiles.hydra
+          { nix.systemFeatures = [ "big-parallel" ]; }
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internet internal ssh wireguard;
