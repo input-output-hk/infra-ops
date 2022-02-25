@@ -63,7 +63,6 @@ in {
             tls = true;
           };
 
-          hydra = mkOauthRoute "hydra";
           grafana = mkOauthRoute "monitoring";
           nomad = mkOauthRoute "nomad";
 
@@ -92,22 +91,6 @@ in {
             middlewares = [ ];
             rule = "Host(`consul.${domain}`) && PathPrefix(`/v1/`)";
             service = "consul";
-            tls = true;
-          };
-
-          bitte-ci = {
-            entrypoints = "https";
-            middlewares = [ "oauth-auth-redirect" ];
-            rule = "Host(`ci.${domain}`) && PathPrefix(`/`)";
-            service = "bitte-ci";
-            tls = true;
-          };
-
-          bitte-ci-hook = {
-            entrypoints = "https";
-            middlewares = [ ];
-            rule = "Host(`ci.${domain}`) && PathPrefix(`/api/v1/github`)";
-            service = "bitte-ci";
             tls = true;
           };
 
@@ -165,18 +148,6 @@ in {
           vault.loadBalancer = {
             servers = [{ url = "https://active.vault.service.consul:8200"; }];
             serversTransport = "cert-transport";
-          };
-
-          hydra.loadBalancer = {
-            servers = [{
-              url = "http://${config.cluster.coreNodes.hydra.privateIP}:3001";
-            }];
-          };
-
-          bitte-ci.loadBalancer = {
-            servers = [{
-              url = "http://${config.cluster.coreNodes.hydra.privateIP}:9494";
-            }];
           };
         };
 

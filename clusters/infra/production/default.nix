@@ -262,11 +262,7 @@ in {
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 100;
 
-        modules = [
-          bitte.profiles.monitoring
-          ./vault-backend.nix
-          # ./ipxe.nix
-        ];
+        modules = [ bitte.profiles.monitoring ./vault-backend.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules)
@@ -298,7 +294,7 @@ in {
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
         modules = [
-          ./bitte-ci.nix
+          ./cicero.nix
           bitte.profiles.hydra
           { nix.systemFeatures = [ "big-parallel" ]; }
         ];

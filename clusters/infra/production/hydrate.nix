@@ -89,16 +89,6 @@
           namespace."infra-*".policy = "write";
         };
 
-        bitte-ci = {
-          description = "Bitte CI (Run Jobs and monitor them)";
-          namespace.default = {
-            policy = "read";
-            capabilities =
-              [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
-          };
-          node.policy = "read";
-        };
-
         cicero = {
           description = "Cicero (Run Jobs and monitor them)";
           agent.policy = "read";
