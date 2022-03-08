@@ -3,6 +3,7 @@
     postgresql = {
       enable = true;
       enableTCPIP = true;
+      package = pkgs.postgresql_13;
 
       authentication = ''
         local all all trust
