@@ -45,10 +45,13 @@
 ```
 curl -s -X PUT -d '{"token":"$GITHUB_TOKEN"}' https://vault.infra.aws.iohkdev.io/v1/auth/github-employees/login
 ```
+
 The `auth.client_token` field is what you're looking for
+
 ```
 export TF_HTTP_USERNAME=TOKEN; export TF_HTTP_PASSWORD="$CLIENT_TOKEN"
 ```
+
 This will allow you to interact with the remote terraform state located on the central vault instance.
 
 ## Standing up the cluster:

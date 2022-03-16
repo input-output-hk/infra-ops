@@ -8,6 +8,34 @@ let
     securityGroupRules;
 
   inherit (self.inputs) bitte;
+
+  # NOTE: switch back to the bitte default userData value when updating the AMIs
+  # for now we hardcode this here to prevent terraform from destroying the cluster.
+  ami = "ami-050be818e0266b741";
+  userData = ''
+    ### https://nixos.org/channels/nixpkgs-unstable nixos
+    { pkgs, config, ... }: {
+      imports = [ <nixpkgs/nixos/modules/virtualisation/amazon-image.nix> ];
+
+      nix = {
+        package = pkgs.nixFlakes;
+        extraOptions = '''
+          show-trace = true
+          experimental-features = nix-command flakes ca-references
+        ''';
+        binaryCaches = [
+          "https://hydra.iohk.io"
+          "s3://iohk-infra/infra/binary-cache/?region=us-west-1"
+        ];
+        binaryCachePublicKeys = [
+          "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+          "infra-production-0:T7ZxFWDaNjyEiiYDe6uZn0eq+77gORGkdec+kYwaB1M="
+        ];
+      };
+
+      environment.etc.ready.text = "true";
+    }
+  '';
 in {
   imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ];
 
@@ -162,7 +190,6 @@ in {
     kms =
       "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966";
     s3Bucket = "iohk-infra";
-    terraformOrganization = "iohk-infra";
 
     s3CachePubKey =
       "infra-production-0:T7ZxFWDaNjyEiiYDe6uZn0eq+77gORGkdec+kYwaB1M=";
@@ -218,8 +245,8 @@ in {
       core-1 = {
         instanceType = "t3a.xlarge";
         privateIP = "172.16.0.10";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
+        inherit ami userData;
 
         modules =
           [ bitte.profiles.core bitte.profiles.bootstrapper ./secrets.nix ];
@@ -232,8 +259,8 @@ in {
       core-2 = {
         instanceType = "t3a.xlarge";
         privateIP = "172.16.1.10";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
+        inherit ami userData;
 
         modules = [ bitte.profiles.core ];
 
@@ -245,8 +272,8 @@ in {
       core-3 = {
         instanceType = "t3a.xlarge";
         privateIP = "172.16.2.10";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-3;
+        inherit ami userData;
 
         modules = [ bitte.profiles.core ];
 
@@ -258,11 +285,11 @@ in {
       monitoring = {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 100;
+        inherit ami userData;
 
-        modules = [ bitte.profiles.monitoring ./vault-backend.nix ];
+        modules = [ bitte.profiles.monitoring ];
 
         securityGroupRules = {
           inherit (securityGroupRules)
@@ -273,9 +300,9 @@ in {
       routing = {
         instanceType = "t3a.small";
         privateIP = "172.16.1.40";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
         volumeSize = 100;
+        inherit ami userData;
         route53.domains = [ "*.${cluster.domain}" ];
 
         modules = [ bitte.profiles.routing ./traefik.nix ];
@@ -288,9 +315,9 @@ in {
       hydra = {
         instanceType = "m5.4xlarge";
         privateIP = "172.16.0.52";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 600;
+        inherit ami userData;
         route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
         modules = [
@@ -307,9 +334,9 @@ in {
       storage-0 = {
         instanceType = "t3a.small";
         privateIP = "172.16.0.30";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 40;
+        inherit ami userData;
 
         modules =
           [ (bitte + /profiles/glusterfs/storage.nix) ./nix-cache-proxy.nix ];
@@ -322,9 +349,9 @@ in {
       storage-1 = {
         instanceType = "t3a.small";
         privateIP = "172.16.1.20";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-2;
         volumeSize = 40;
+        inherit ami userData;
 
         modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
 
@@ -336,9 +363,9 @@ in {
       storage-2 = {
         instanceType = "t3a.small";
         privateIP = "172.16.2.20";
-        ami = "ami-050be818e0266b741";
         subnet = cluster.vpc.subnets.core-3;
         volumeSize = 40;
+        inherit ami userData;
 
         modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
 

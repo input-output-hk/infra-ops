@@ -2,7 +2,7 @@
   description = "Bitte for infra-ops";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/remote-builder-v2";
+    bitte.url = "github:input-output-hk/bitte";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
