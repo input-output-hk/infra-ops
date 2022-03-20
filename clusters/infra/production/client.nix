@@ -32,7 +32,7 @@
         "--state"
         "/var/lib/nomad-follower"
         "--alloc"
-        "/var/lib/nomad/alloc/%s/alloc"
+        "/var/lib/nomad/alloc/%%s/alloc"
         "--loki-url"
         "http://monitoring:3100"
         "--namespace"
