@@ -287,7 +287,7 @@ in {
         instanceType = "t3a.large";
         privateIP = "172.16.0.20";
         subnet = cluster.vpc.subnets.core-1;
-        volumeSize = 100;
+        volumeSize = 300;
         inherit ami userData;
 
         modules = [ bitte.profiles.monitoring ];
