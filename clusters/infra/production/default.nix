@@ -173,6 +173,7 @@ in {
     infra-default.description = "Infra Default";
     cicero.description = "Cicero";
     midnight-ng.description = "Midnight NG";
+    marlowe.description = "Marlowe";
   };
 
   nix.binaryCaches = [ "https://hydra.iohk.io" "https://cache.nixos.org" ];
@@ -185,7 +186,7 @@ in {
   cluster = {
     name = "infra-production";
     developerGithubNames = [ ];
-    developerGithubTeamNames = [ ];
+    developerGithubTeamNames = [ "plutus-devops" ];
     domain = "infra.aws.iohkdev.io";
     kms =
       "arn:aws:kms:us-west-1:212281588582:key/da0d55b9-3deb-4775-8e00-30eee3042966";

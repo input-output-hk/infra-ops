@@ -1,5 +1,11 @@
 { lib, ... }: {
   tf.hydrate-cluster.configuration = {
+    resource.vault_github_team.marlowe-devops = {
+      backend = "\${vault_github_auth_backend.employee.path}";
+      team = "plutus-devops";
+      policies = [ "developer" "default" ];
+    };
+
     resource.vault_github_user.cicero-biandratti = {
       backend = "\${vault_github_auth_backend.employee.path}";
       user = "biandratti";
@@ -14,6 +20,11 @@
 
     locals.policies = {
       consul.developer.servicePrefix."infra-" = {
+        policy = "write";
+        intentions = "write";
+      };
+
+      consul.developer.servicePrefix."marlowe-" = {
         policy = "write";
         intentions = "write";
       };
@@ -81,12 +92,52 @@
       nomad = {
         admin = {
           description = "Admin policies";
-          namespace."infra-*".policy = "write";
+          namespace."*" = {
+            policy = "write";
+            capabilities = [
+              "alloc-exec"
+              "alloc-lifecycle"
+              "alloc-node-exec"
+              "csi-list-volume"
+              "csi-mount-volume"
+              "csi-read-volume"
+              "csi-register-plugin"
+              "csi-write-volume"
+              "dispatch-job"
+              "list-jobs"
+              "list-scaling-policies"
+              "read-fs"
+              "read-job"
+              "read-job-scaling"
+              "read-logs"
+              "read-scaling-policy"
+              "scale-job"
+              "submit-job"
+            ];
+          };
         };
 
         developer = {
           description = "Dev policies";
-          namespace."infra-*".policy = "write";
+          namespace."marlowe" = {
+            policy = "write";
+            capabilities = [
+              "alloc-exec"
+              "alloc-lifecycle"
+              "dispatch-job"
+              "list-jobs"
+              "list-scaling-policies"
+              "read-fs"
+              "read-job"
+              "read-job-scaling"
+              "read-logs"
+              "read-scaling-policy"
+              "scale-job"
+              "submit-job"
+            ];
+          };
+          node.policy = "read";
+          host_volume."marlowe".policy = "write";
         };
 
         cicero = {
