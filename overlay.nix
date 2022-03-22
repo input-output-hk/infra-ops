@@ -9,6 +9,7 @@ in {
   inherit (inputs.nomad-driver-nix.packages."${system}") nomad-driver-nix;
 
   nomad-follower = inputs.nomad-follower.defaultPackage."${system}";
+  spongix = inputs.spongix.defaultPackage."${system}";
 
   job = let
     src = inclusive ./. [ ./cue.mod ./deploy.cue ./jobs ];

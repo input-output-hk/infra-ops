@@ -230,6 +230,7 @@ in {
             bitte.profiles.client
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
+            "${self.inputs.nomad-follower}/module.nix"
             ./client.nix
           ];
 
@@ -339,8 +340,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules =
-          [ (bitte + /profiles/glusterfs/storage.nix) ./nix-cache-proxy.nix ];
+        modules = [ (bitte + /profiles/storage.nix) ./spongix.nix ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
@@ -354,7 +354,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules = [ (bitte + /profiles/storage.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
@@ -368,7 +368,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules = [ (bitte + /profiles/glusterfs/storage.nix) ];
+        modules = [ (bitte + /profiles/storage.nix) ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;

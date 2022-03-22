@@ -8,24 +8,19 @@
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
     nomad-follower.url = "github:input-output-hk/nomad-follower";
-    nix-cache-proxy.url = "github:input-output-hk/nix-cache-proxy";
+    spongix.url = "github:input-output-hk/spongix";
     devshell.url = "github:numtide/devshell";
   };
 
-  outputs =
-    { self, nixpkgs, utils, bitte, nix-cache-proxy, devshell, ... }@inputs:
+  outputs = { self, nixpkgs, utils, bitte, spongix, devshell, ... }@inputs:
     let
       system = "x86_64-linux";
       domain = "infra.aws.iohkdev.io";
 
       overlay = nixpkgs.lib.composeManyExtensions overlays;
 
-      overlays = [
-        (import ./overlay.nix inputs)
-        bitte.overlay
-        nix-cache-proxy.overlay
-        devshell.overlay
-      ];
+      overlays =
+        [ (import ./overlay.nix inputs) bitte.overlay devshell.overlay ];
 
       pkgs = import nixpkgs {
         inherit overlays system;

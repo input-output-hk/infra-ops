@@ -10,35 +10,13 @@
   services.nomad.client.chroot_env =
     lib.mkForce { "/etc/passwd" = "/etc/passwd"; };
 
-  systemd.services.nomad-follower = {
-    wantedBy = [ "multi-user.target" ];
-    after = [ "nomad.service" ];
+  services.nomad-follower.enable = true;
 
-    environment = {
-      VAULT_ADDR = "http://127.0.0.1:8200";
-      NOMAD_ADDR = "https://127.0.0.1:4646";
-      NOMAD_TOKEN_FILE = "/run/keys/vault-token";
-    };
-
-    path = with pkgs; [ vector ];
-
-    serviceConfig = {
-      Restart = "always";
-      RestartSec = "10s";
-      StateDirectory = "nomad-follower";
-      ExecStart = toString [
-        "@${pkgs.nomad-follower}/bin/nomad-follower"
-        "nomad-follower"
-        "--state"
-        "/var/lib/nomad-follower"
-        "--alloc"
-        "/var/lib/nomad/alloc/%%s/alloc"
-        "--loki-url"
-        "http://monitoring:3100"
-        "--namespace"
-        "cicero"
-      ];
-      WorkingDirectory = "/var/lib/nomad-follower";
-    };
-  };
+  /* services.vault-agent.templates."/run/keys/nomad-follower-token" = {
+       command =
+         "${pkgs.systemd}/bin/systemctl --no-block try-restart nomad-follower.service || true";
+       contents = ''
+         {{- with secret "nomad/creds/nomad-follower" }}{{ .Data.secret_id }}{{ end -}}'';
+     };
+  */
 }

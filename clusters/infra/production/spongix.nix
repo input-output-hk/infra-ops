@@ -4,16 +4,13 @@ let
   public-key =
     lib.fileContents (config.secrets.encryptedRoot + "/nix-public-key-file");
 in {
-  imports = [ inputs.nix-cache-proxy.nixosModules.nix-cache-proxy ];
+  imports = [ inputs.spongix.nixosModules.spongix ];
 
-  systemd.tmpfiles.rules = [ "d /mnt/gv0/nix-cache-proxy 1777 root root -" ];
+  systemd.tmpfiles.rules = [ "d /mnt/gv0/spongix 1777 root root -" ];
 
-  services.nix-cache-proxy = {
+  services.spongix = {
     enable = true;
-    # awsBucketName =
-    # awsBucketRegion =
-    # awsProfile =
-    cacheDir = "/mnt/gv0/nix-cache-proxy";
+    cacheDir = "/mnt/gv0/spongix";
     host = "";
     port = 7745;
     secretKeyFiles = { infra-production = secret-key; };
@@ -28,11 +25,11 @@ in {
 
   nix = {
     extraOptions = let
-      post-build-hook = pkgs.writeShellScript "nix-cache-proxy" ''
+      post-build-hook = pkgs.writeShellScript "spongix" ''
         set -euf
         export IFS=' '
         echo "Uploading to cache: $OUT_PATHS"
-        exec nix copy --to 'http://${config.cluster.coreNodes.storage-0.privateIP}:7745/cache' $OUT_PATHS
+        exec nix copy --to 'http://${config.cluster.coreNodes.storage-0.privateIP}:7745' $OUT_PATHS
       '';
     in ''
       http2 = true
