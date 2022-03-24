@@ -12,11 +12,10 @@
 
   services.nomad-follower.enable = true;
 
-  /* services.vault-agent.templates."/run/keys/nomad-follower-token" = {
-       command =
-         "${pkgs.systemd}/bin/systemctl --no-block try-restart nomad-follower.service || true";
-       contents = ''
-         {{- with secret "nomad/creds/nomad-follower" }}{{ .Data.secret_id }}{{ end -}}'';
-     };
-  */
+  services.vault-agent.templates."/run/keys/nomad-follower-token" = {
+    command =
+      "${pkgs.systemd}/bin/systemctl --no-block reload nomad-follower.service || true";
+    contents = ''
+      {{- with secret "nomad/creds/nomad-follower" }}{{ .Data.secret_id }}{{ end -}}'';
+  };
 }
