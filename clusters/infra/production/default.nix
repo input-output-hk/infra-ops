@@ -230,7 +230,7 @@ in {
             bitte.profiles.client
             "${self.inputs.nixpkgs}/nixos/modules/profiles/headless.nix"
             "${self.inputs.nixpkgs}/nixos/modules/virtualisation/ec2-data.nix"
-            "${self.inputs.nomad-follower}/module.nix"
+            bitte.profiles.nomad-follower
             ./client.nix
           ];
 

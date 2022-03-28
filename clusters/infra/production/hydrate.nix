@@ -149,15 +149,7 @@
             capabilities =
               [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
           };
-        };
-
-        nomad-follower = {
-          description = "Nomad Follower (Collect logs from cicero allocations)";
-          agent.policy = "read";
-          namespace.cicero = {
-            policy = "read";
-            capabilities = [ "read-job" ];
-          };
+          host_volume."marlowe".policy = "write";
         };
       };
     };

@@ -7,7 +7,6 @@
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
-    nomad-follower.url = "github:input-output-hk/nomad-follower";
     spongix.url = "github:input-output-hk/spongix";
     devshell.url = "github:numtide/devshell";
   };
