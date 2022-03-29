@@ -11,8 +11,10 @@ in {
   services.spongix = {
     enable = true;
     cacheDir = "/mnt/gv0/spongix";
+    cacheSize = 800;
     host = "";
     port = 7745;
+    gcInterval = "24h";
     secretKeyFiles = { infra-production = secret-key; };
     substituters = [ "https://cache.nixos.org" "https://hydra.iohk.io" ];
     trustedPublicKeys = [
@@ -55,5 +57,15 @@ in {
     script = ''
       chmod 0600 /etc/nix/secret-key
     '';
+  };
+
+  services.telegraf.extraConfig.inputs.prometheus = {
+    urls = [
+      "http://127.0.0.1:${
+        toString config.services.promtail.server.http_listen_port
+      }/metrics"
+      "http://127.0.0.1:${toString config.services.spongix.port}/metrics"
+    ];
+    metric_version = 1;
   };
 }
