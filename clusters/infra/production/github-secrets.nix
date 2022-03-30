@@ -6,7 +6,7 @@ let
     "${pkgs.sops}/bin/sops --encrypt --input-type binary --kms '${kms}'";
 in {
   secrets.install.github-etc-nix-netrc = {
-    inputType = "json";
+    inputType = "binary";
     outputType = "binary";
     source = config.secrets.encryptedRoot + "/netrc";
     target = "/etc/nix/netrc";
@@ -16,7 +16,7 @@ in {
   };
 
   secrets.install.github-root-netrc = {
-    inputType = "json";
+    inputType = "binary";
     outputType = "binary";
     source = config.secrets.encryptedRoot + "/netrc";
     target = "/root/.netrc";
@@ -26,7 +26,7 @@ in {
   };
 
   secrets.install.github-var-lib-nomad = {
-    inputType = "json";
+    inputType = "binary";
     outputType = "binary";
     source = config.secrets.encryptedRoot + "/netrc";
     target = "/var/lib/nomad/.netrc";
