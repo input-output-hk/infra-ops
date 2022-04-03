@@ -37,7 +37,7 @@ let
     }
   '';
 in {
-  imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ];
+  imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ./spongix-user.nix ];
 
   # avoid CVE-2021-4034 (PwnKit)
   security.polkit.enable = false;
@@ -176,13 +176,6 @@ in {
     marlowe.description = "Marlowe";
   };
 
-  nix.binaryCaches = [ "https://hydra.iohk.io" "https://cache.nixos.org" ];
-
-  nix.binaryCachePublicKeys = [
-    "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-    "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-  ];
-
   cluster = {
     name = "infra-production";
     developerGithubNames = [ ];
@@ -205,10 +198,12 @@ in {
       {
         region = "eu-central-1";
         desiredCapacity = 2;
+        node_class = "production";
       }
       {
         region = "us-east-2";
         desiredCapacity = 2;
+        node_class = "production";
       }
       # Only 2 AZs available for new customers
       #{
@@ -224,7 +219,6 @@ in {
           maxInstanceLifetime = 0;
           iam.role = cluster.iam.roles.client;
           iam.instanceProfile.role = cluster.iam.roles.client;
-          node_class = "production";
 
           modules = [
             bitte.profiles.client
@@ -320,12 +314,12 @@ in {
         subnet = cluster.vpc.subnets.core-1;
         volumeSize = 600;
         inherit ami userData;
-        route53.domains = [ "hydra-wg.${cluster.domain}" ];
 
         modules = [
           ./cicero.nix
           bitte.profiles.hydra
           { nix.systemFeatures = [ "big-parallel" ]; }
+          ./spongix.nix
         ];
 
         securityGroupRules = {
@@ -340,7 +334,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules = [ (bitte + /profiles/storage.nix) ./spongix.nix ];
+        modules = [ bitte.profiles.storage ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
@@ -354,7 +348,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules = [ (bitte + /profiles/storage.nix) ];
+        modules = [ bitte.profiles.storage ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;
@@ -368,7 +362,7 @@ in {
         volumeSize = 40;
         inherit ami userData;
 
-        modules = [ (bitte + /profiles/storage.nix) ];
+        modules = [ bitte.profiles.storage ];
 
         securityGroupRules = {
           inherit (securityGroupRules) internal internet ssh;

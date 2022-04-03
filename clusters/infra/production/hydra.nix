@@ -8,6 +8,7 @@ let
     "${pkgs.sops}/bin/sops --encrypt --input-type binary --kms '${kms}'";
 
 in {
+  imports = [ ./spongix.nix ];
   # boot.extraModulePackages = [ config.boot.kernelPackages.wireguard ];
 
   secrets.install = {
