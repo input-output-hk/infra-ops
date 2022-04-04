@@ -154,11 +154,11 @@
         "vulnix": "vulnix"
       },
       "locked": {
-        "lastModified": 1648808557,
-        "narHash": "sha256-pyJpyFC0MbVCGvmWprMF9g7bWKXGnCAUbgEbsGANJwY=",
+        "lastModified": 1649062994,
+        "narHash": "sha256-vZmE3Ev2Cy4T1QP3jk80jQUkpBCEdFmvt4Lj9rwjPAw=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "83bb9133c2f6a2706e58cefb0f1b14ca111b5c3f",
+        "rev": "7f1f346e44ed79bfe445db208846e8d0aad60df6",
         "type": "github"
       },
       "original": {
@@ -1239,11 +1239,11 @@
     },
     "nixpkgs-unstable_2": {
       "locked": {
-        "lastModified": 1620950790,
-        "narHash": "sha256-iv+vesKK/8kqb5yK1vbYkMd1RQnDIO4wcbbmnoVlMRI=",
+        "lastModified": 1648219316,
+        "narHash": "sha256-Ctij+dOi0ZZIfX5eMhgwugfvB+WZSrvVNAyAuANOsnQ=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "1cdf5f44364fe06ce3d0cded1d784e132e6f3354",
+        "rev": "30d3d79b7d3607d56546dd2a6b49e156ba0ec634",
         "type": "github"
       },
       "original": {
@@ -1671,11 +1671,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1648463119,
-        "narHash": "sha256-4CvOIWdDtGsWAGy/jO3HCs+hu8hZ6WjHnGNhmF0tbdc=",
+        "lastModified": 1649062947,
+        "narHash": "sha256-il92h97qdOevDuIQnRpXjobjLoyDRcbyLTydRqR3l/Y=",
         "owner": "input-output-hk",
         "repo": "nomad-follower",
-        "rev": "e900a2276efafda6738f58fae3935079f5e970f3",
+        "rev": "5a749294755ce7ff315fdae99fa3abf47d7f62d1",
         "type": "github"
       },
       "original": {

@@ -37,7 +37,12 @@ let
     }
   '';
 in {
-  imports = [ ./vault-raft-storage.nix ./secrets.nix ./github-secrets.nix ./spongix-user.nix ];
+  imports = [
+    ./vault-raft-storage.nix
+    ./secrets.nix
+    ./github-secrets.nix
+    ./spongix-user.nix
+  ];
 
   # avoid CVE-2021-4034 (PwnKit)
   security.polkit.enable = false;
