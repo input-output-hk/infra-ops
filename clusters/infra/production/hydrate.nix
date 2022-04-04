@@ -146,8 +146,13 @@
           node.policy = "read";
           namespace."*" = {
             policy = "read";
-            capabilities =
-              [ "submit-job" "dispatch-job" "read-logs" "read-job" ];
+            capabilities = [
+              "alloc-lifecycle"
+              "submit-job"
+              "dispatch-job"
+              "read-logs"
+              "read-job"
+            ];
           };
           host_volume."marlowe".policy = "write";
         };
