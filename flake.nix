@@ -3,6 +3,7 @@
 
   inputs = {
     bitte.url = "github:input-output-hk/bitte/hotterfix";
+    bitte.inputs.nomad-driver-nix.follows = "nomad-driver-nix";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
