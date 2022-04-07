@@ -36,13 +36,21 @@
     service = {
       name = "spongix";
       port = 7745;
-      tags = [ "spongix" "server" ];
+      tags = [
+        "spongix"
+        "ingress"
+        "traefik.enable=true"
+        "traefik.http.routers.spongix.rule=Host(`cache.infra.aws.iohkdev.io`) && Method(`GET`, `HEAD`)"
+        "traefik.http.routers.spongix.entrypoints=https"
+        "traefik.http.routers.spongix.tls=true"
+        "traefik.http.routers.spongix.tls.certresolver=acme"
+      ];
 
       checks = {
-        gluster-tcp = {
+        spongix-tcp = {
           interval = "10s";
           timeout = "5s";
-          tcp = "localhost:7745";
+          tcp = "127.0.0.1:7745";
         };
       };
     };

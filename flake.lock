@@ -154,16 +154,16 @@
         "vulnix": "vulnix"
       },
       "locked": {
-        "lastModified": 1649062994,
-        "narHash": "sha256-vZmE3Ev2Cy4T1QP3jk80jQUkpBCEdFmvt4Lj9rwjPAw=",
+        "lastModified": 1649088030,
+        "narHash": "sha256-T8IhVMnziamXn+uI2OSuw88+40sjR81ILnHL2tz9RVQ=",
         "owner": "input-output-hk",
         "repo": "bitte",
-        "rev": "7f1f346e44ed79bfe445db208846e8d0aad60df6",
+        "rev": "de578360578833de27d1bbbf3237d0663d314c2c",
         "type": "github"
       },
       "original": {
         "owner": "input-output-hk",
-        "ref": "hotfix",
+        "ref": "hotterfix",
         "repo": "bitte",
         "type": "github"
       }
@@ -1671,11 +1671,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1649062947,
-        "narHash": "sha256-il92h97qdOevDuIQnRpXjobjLoyDRcbyLTydRqR3l/Y=",
+        "lastModified": 1648463119,
+        "narHash": "sha256-4CvOIWdDtGsWAGy/jO3HCs+hu8hZ6WjHnGNhmF0tbdc=",
         "owner": "input-output-hk",
         "repo": "nomad-follower",
-        "rev": "5a749294755ce7ff315fdae99fa3abf47d7f62d1",
+        "rev": "e900a2276efafda6738f58fae3935079f5e970f3",
         "type": "github"
       },
       "original": {

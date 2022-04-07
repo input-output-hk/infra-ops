@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   services = {
     postgresql = {
       enable = true;
@@ -6,6 +6,8 @@
       package = pkgs.postgresql_13;
 
       settings = {
+        log_statement = "all";
+        log_destination = lib.mkForce "syslog";
         shared_preload_libraries = "pg_stat_statements";
         "pg_stat_statements.track" = "all";
         max_connections = 100;

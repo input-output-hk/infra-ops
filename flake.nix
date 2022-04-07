@@ -2,7 +2,7 @@
   description = "Bitte for infra-ops";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/hotfix";
+    bitte.url = "github:input-output-hk/bitte/hotterfix";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";
@@ -11,36 +11,53 @@
     devshell.url = "github:numtide/devshell";
   };
 
-  outputs = { self, nixpkgs, utils, bitte, spongix, devshell, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      domain = "infra.aws.iohkdev.io";
+  outputs = {
+    self,
+    nixpkgs,
+    utils,
+    bitte,
+    spongix,
+    devshell,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    domain = "infra.aws.iohkdev.io";
 
-      overlay = nixpkgs.lib.composeManyExtensions overlays;
+    overlay = nixpkgs.lib.composeManyExtensions overlays;
 
-      overlays =
-        [ (import ./overlay.nix inputs) bitte.overlay devshell.overlay ];
+    overlays = [(import ./overlay.nix inputs) bitte.overlay devshell.overlay];
 
-      pkgs = import nixpkgs {
-        inherit overlays system;
-        config.allowUnfree = true;
+    pkgs = import nixpkgs {
+      inherit overlays system;
+      config.allowUnfree = true;
+    };
+
+    bitteStack = let
+      stack = bitte.lib.mkBitteStack {
+        inherit self inputs domain overlays;
+        bitteProfile = ./clusters/infra/production;
+        deploySshKey = "./secrets/ssh-infra-production";
+        hydrateModule = ./clusters/infra/production/hydrate.nix;
       };
-
-      bitteStack = let
-        stack = bitte.lib.mkBitteStack {
-          inherit self inputs domain overlays;
-          bitteProfile = ./clusters/infra/production;
-          deploySshKey = "./secrets/ssh-infra-production";
-          hydrateModule = ./clusters/infra/production/hydrate.nix;
-        };
-      in stack // { deploy = stack.deploy // { autoRollback = false; }; };
-    in {
+    in
+      stack // {deploy = stack.deploy // {autoRollback = false;};};
+  in
+    {
       inherit overlay;
-      legacyPackages."${system}" = pkgs;
+      legacyPackages."${system}" =
+        pkgs
+        // {
+          tu = import ./tu.nix {inherit pkgs;};
+        };
 
       devShell."${system}" = pkgs.devshell.mkShell {
-        imports = [ bitte.inputs.cli.devshellModules.bitte ];
-        commands = [ ];
+        imports = [bitte.inputs.cli.devshellModules.bitte];
+        commands = [
+          {
+            category = "utils";
+            package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.alejandra;
+          }
+        ];
         bitte = {
           cluster = "infra-production";
           domain = "infra.aws.iohkdev.io";
@@ -53,5 +70,6 @@
             self.clusters.infra-production._proto.config.cluster.autoscalingGroups;
         };
       };
-    } // bitteStack;
+    }
+    // bitteStack;
 }
