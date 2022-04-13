@@ -2,7 +2,7 @@
   description = "Bitte for infra-ops";
 
   inputs = {
-    bitte.url = "github:input-output-hk/bitte/hotterfix";
+    bitte.url = "github:input-output-hk/bitte";
     bitte.inputs.nomad-driver-nix.follows = "nomad-driver-nix";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
@@ -10,6 +10,7 @@
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
     spongix.url = "github:input-output-hk/spongix";
     devshell.url = "github:numtide/devshell";
+    devshell-capsules.url = "github:input-output-hk/devshell-capsules";
   };
 
   outputs = {
@@ -19,6 +20,7 @@
     bitte,
     spongix,
     devshell,
+    devshell-capsules,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -45,19 +47,14 @@
   in
     {
       inherit overlay;
-      legacyPackages."${system}" =
-        pkgs
-        // {
-          tu = import ./tu.nix {inherit pkgs;};
-        };
-
       devShell."${system}" = pkgs.devshell.mkShell {
-        imports = [bitte.inputs.cli.devshellModules.bitte];
-        commands = [
-          {
-            category = "utils";
-            package = inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.alejandra;
-          }
+        imports = [
+          bitte.devshellModule
+          devshell-capsules.base
+          devshell-capsules.cloud
+          devshell-capsules.integrations
+          devshell-capsules.tools
+          devshell-capsules.metal
         ];
         bitte = {
           cluster = "infra-production";
