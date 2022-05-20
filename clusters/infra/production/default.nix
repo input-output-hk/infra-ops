@@ -172,6 +172,12 @@ in {
       team = "jormungandr-devops";
       policies = [ "vit-terraform" ];
     };
+
+    resource.vault_github_team.plutus-devops = {
+      backend = var "vault_github_auth_backend.terraform.path";
+      team = "plutus-devops";
+      policies = [ "plutus-terraform" ];
+    };
   };
 
   services.nomad.namespaces = {

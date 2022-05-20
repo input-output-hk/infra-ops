@@ -54,6 +54,11 @@
           "secret/metadata/vbk/vit-testnet/*" = [ c r u d l ];
         };
 
+        plutus-terraform.path = caps {
+          "secret/data/vbk/plutus-playground/*" = [ c r u d l ];
+          "secret/metadata/vbk/plutus-playground/*" = [ c r u d l ];
+        };
+
         cicero.path = caps {
           "auth/token/lookup" = [ u ];
           "auth/token/lookup-self" = [ r ];
