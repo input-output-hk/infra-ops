@@ -296,7 +296,10 @@ in {
         volumeSize = 300;
         inherit ami userData;
 
-        modules = [ bitte.profiles.monitoring ];
+        modules = [
+          bitte.profiles.monitoring
+          {systemd.services.victoriametrics.serviceConfig.LimitNOFILE = 65535;}
+        ];
 
         securityGroupRules = {
           inherit (securityGroupRules)
