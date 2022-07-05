@@ -298,10 +298,18 @@ in {
 
         modules = [
           bitte.profiles.monitoring
-          {
+          ({config, ...}: let
+            cfg = config.services.vault-backend;
+          in {
             systemd.services.victoriametrics.serviceConfig.LimitNOFILE = 65535;
             services.monitoring.useVaultBackend = true;
-          }
+            systemd.services.vault-backend.environment = lib.mkForce {
+              VAULT_URL = "https://vault.service.consul:8200";
+              VAULT_PREFIX = "vbk";
+              LISTEN_ADDRESS = "${cfg.interface}:${toString cfg.port}";
+              DEBUG = lib.mkIf cfg.debug "TRUE";
+            };
+          })
         ];
 
         securityGroupRules = {
