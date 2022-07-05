@@ -298,7 +298,10 @@ in {
 
         modules = [
           bitte.profiles.monitoring
-          {systemd.services.victoriametrics.serviceConfig.LimitNOFILE = 65535;}
+          {
+            systemd.services.victoriametrics.serviceConfig.LimitNOFILE = 65535;
+            services.monitoring.useVaultBackend = true;
+          }
         ];
 
         securityGroupRules = {
