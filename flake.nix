@@ -4,6 +4,7 @@
   inputs = {
     bitte.url = "github:input-output-hk/bitte";
     bitte.inputs.nomad-driver-nix.follows = "nomad-driver-nix";
+    bitte.inputs.nomad-follower.url = "github:input-output-hk/nomad-follower/e6fe949411948b1db6ed88f2a8c3700de55a5f3e";
     nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
     nomad-driver-nix.url = "github:input-output-hk/nomad-driver-nix";

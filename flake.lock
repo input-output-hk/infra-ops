@@ -1545,11 +1545,11 @@
         "utils": "utils_3"
       },
       "locked": {
-        "lastModified": 1649836589,
-        "narHash": "sha256-0mKWIfF7RtkwiJv2NlWKisdyivsSlHMTAQ3P72RSD3k=",
+        "lastModified": 1657616649,
+        "narHash": "sha256-Z5/s0pnyxQPdJW3VQWj43XcvMBLNeCAAln9fRyCgpzg=",
         "owner": "input-output-hk",
         "repo": "nomad-follower",
-        "rev": "18cafe87df773e61a6ce300d9ff91dee4aeae053",
+        "rev": "e6fe949411948b1db6ed88f2a8c3700de55a5f3e",
         "type": "github"
       },
       "original": {
